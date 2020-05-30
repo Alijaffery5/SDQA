@@ -1,0 +1,73 @@
+{% extends "base.html" %}
+{% block title %}Hotspot Analysis{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <div className="col-sm-8 mx-auto">
+        <div class="card">
+            <div class="card-header card-header-info">
+                <h2 class="card-title">Hotspot Analysis</h2>
+                <p class="card-category">The Class with highest smells will be ranked first</p>
+            </div>
+            <div class="card-body table-responsive">
+                <table class="table table-hover">
+
+                    <thead>
+                        <tr style="font-weight: bold;">
+                        <th scope="col"> Filename</th>
+                        <th scope="col"> Class Name</th>
+                        <th scope="col"> Long Parameter List (LPL) Smell</th>
+                        <th scope="col"> Long Method (LM) Smell</th>
+                        <th scope="col"> Large Class Smells</th>
+                        <th scope="col"> Long Base Class List(LBCL)</th>
+                        <th scope="col"> Hotspot Score</th>
+                    </tr>
+                    </thead>
+                    <tbody>
+                        <!-- Displaying table for Hotspot Analysis -->
+                        <tr class="table-danger">
+                            <td> Phones.py</td>
+                            <td> Phone</td>
+                            <td> 2</td>
+                            <td> 3</td>
+                            <td> 0</td>
+                            <td> 1</td>
+                            <td> 6</td>
+                        </tr>
+                        <tr class="table-warning">
+                            <td> Phones.py</td>
+                            <td> MobilePhone</td>
+                            <td> 2</td>
+                            <td> 2</td>
+                            <td> 0</td>
+                            <td> 1</td>
+                            <td> 5</td>
+                        </tr>
+                        <tr class="table-success">
+                            <td> Phones.py</td>
+                            <td> Iphone6</td>
+                            <td> 2</td>
+                            <td> 2</td>
+                            <td> 0</td>
+                            <td> 0</td>
+                            <td> 4</td>
+                        </tr>
+                        <tr>
+                            <td> Phones.py</td>
+                            <td> SamsungGalaxyS8</td>
+                            <td> 2</td>
+                            <td> 2</td>
+                            <td> 0</td>
+                            <td> 0</td>
+                            <td> 2</td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+{% endblock %}

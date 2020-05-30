@@ -1,0 +1,388 @@
+{% extends 'base.html' %}
+{% block title %}Design Smells{% endblock %}
+{% block content %}
+
+<!DOCTYPE html>
+<html>
+
+<head>
+  <meta charset="UTF-8">
+  <title>Showing Distribution of Detected Design Smells</title>
+  <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+  <script type="text/javascript">
+    google.charts.load("current", { packages: ["corechart"] });
+    google.charts.setOnLoadCallback(drawChart);
+    function drawChart() {
+      var data = google.visualization.arrayToDataTable([
+        {% for key, value in data.items() %}
+    {% if value is string %}
+    ['{{ key }}', '{{ value }}'],
+      {% else %}
+    ['{{ key }}', {{ value }}],
+      {% endif %}
+    {% endfor %}
+                ]);
+
+    var options = {
+      title: 'Design Smells',
+      is3D: true,
+    };
+
+    var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+    function selectHandler() {
+      var selectedItem = chart.getSelection()[0];
+
+      if (selectedItem) {
+        var smell_name = data.getValue(selectedItem.row, 0);
+        if (smell_name == 'Long Method(LM)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr class = table-danger ></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Phones.py');
+            var col2 = $('<td></td>').addClass('bar').text(77);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+          }
+        }
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+        else if (smell_name == 'Long Parameter List') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Data Class') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+
+        else if (smell_name == 'Large Class(LC)') {
+          $('#table_div').find('td').detach();
+          if ($('#table_div table').length > 0) {
+            var row = $('<tr></tr>');
+            {% for x, y in lm.items() %}
+            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+            var col2 = $('<td></td>').addClass('bar').text(80);
+            var col3 = $('<td></td>').addClass('bar').text('Iphone');
+            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            row.append(col1, col2, col3, col4, col5);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+            $('#table_div table').append(row);
+
+          }
+        }
+      }
+    }
+    google.visualization.events.addListener(chart, 'select', selectHandler);
+    google.visualization.events.addListener(chart, 'onmouseover', pointer);
+    google.visualization.events.addListener(chart, 'onmouseout', default_pointer);
+    chart.draw(data, options);
+    var barchart_options = {
+      title: 'Barchart: How Much Pizza I Ate Last Night',
+      width: 400,
+      height: 300,
+      legend: 'none'
+    };
+    var barchart = new google.visualization.BarChart(document.getElementById('barchart_div'));
+    barchart.draw(data, barchart_options);
+
+    function pointer() {
+      $('#piechart_3d').css('cursor', 'pointer')
+    }
+    function default_pointer() {
+      $('#piechart_3d').css('cursor', 'default')
+    }
+      }
+
+  </script>
+</head>
+
+<body>
+  <div class="container" id="table_div">
+    <h3>Showing Distribution of Detected Design Smells</h3>
+    <div id="piechart_3d" style="width: 800px; height: 500px;"></div>
+
+    <div className="col-sm-8 mx-auto">
+      <div class="card">
+        <div class="card-header card-header-info">
+          <h2 class="card-title">Smell Name </h2>
+          <p>Showing details of that smell detected </p>
+        </div>
+        <div class="card-body table-responsive">
+          <table class="table table-hover">
+
+            <thead>
+              <tr style="font-weight: bold;">
+                <th scope="col"> Filename</th>
+                <th scope="col"> Line Number</th>
+                <th scope="col"> Class Name</th>
+                <th scope="col"> Method Name</th>
+                <th scope="col"> Method Length</th>
+                <th scope="col"> Normal Threshold</th>
+              </tr>
+            </thead>
+            <tbody>
+              <!-- Displaying table for Hotspot Analysis -->
+              <!-- <tr class="table-danger">
+                              <td> Phones.py</td>
+                              <td>77</td>
+                              <td> Iphone</td>
+                              {% for x,y in lm.items() %}
+                              <td> {{ x }} </td>
+                              <td> {{y}} </td>
+                              {% endfor %}
+                              <td>
+                                <=30
+                              </td>
+                          </tr> -->
+
+            </tbody>
+          </table>
+        </div>
+      </div>
+    </div>
+    <div id="barchart_div" style="width: 200px; height: 500px;"></div>
+  </div>
+</body>
+
+</html>
+
+{% endblock %}

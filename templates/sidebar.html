@@ -1,0 +1,66 @@
+<div class="sidebar" data-color="green" data-background-color="black" data-image="/static/assets/img/sidebar-1.jpg">
+  <div class="logo">
+    <a href="/" class="simple-text logo-normal">
+      SDQA
+    </a>
+  </div>
+
+  <div class="sidebar-wrapper">
+    <ul class="nav">
+      <li class="nav-item active">
+        <a class="nav-link" href="/dashboard">
+          <i class="material-icons">dashboard</i>
+          <p>Dashboard</p>
+        </a>
+      </li>
+      <li class="nav-item">
+        <a class="nav-link" href="/uploadFile">
+          <i class="material-icons">file_upload</i>
+          <p>Upload Python Code</p>
+        </a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/Design_smells">
+          <i class="material-icons">content_paste</i>
+          <p>Design Smells</p>
+        </a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/metrics">
+          <i class="material-icons">assessment</i>
+          <p>Detailed Metric Analysis</p>
+        </a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/hotspot">
+          <i class="material-icons">bubble_chart</i>
+          <p>Hotspot Analysis</p>
+        </a>
+      </li>
+      <li class="nav-item ">
+        <a class="nav-link" href="/summary">
+          <i class="material-icons">library_books</i>
+          <p>Summary</p>
+        </a>
+      </li>
+
+    </ul>
+  </div>
+
+</div>
+
+
+<script>
+  $(document).ready(function () {
+    $(function ($) {
+      let url = window.location.href;
+      $('.nav li a').each(function () {
+        if (this.href === url) {
+          $(".nav li.active").removeClass("active"); //Remove any "active" class  
+          $(this).closest('li').addClass('active');
+        }
+      });
+    });
+  });
+
+</script>

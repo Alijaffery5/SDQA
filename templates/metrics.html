@@ -1,0 +1,220 @@
+{% extends "base.html" %}
+{% block title %}Detailed Metric Analysis{% endblock %}
+
+{% block content %}
+
+<div class="container">
+
+    <h2 class="text-center">Detailed Metric Analysis</h2>
+    <p class="text-center">Select any Metric to see detailed Analysis</p>
+    <div class="row">
+
+        <div class="col-md-6">
+            <h2>Class Level Metrics</h2>
+            <div class="form-group">
+                <form method="POST" action="/metrics">
+                    
+                    <input type="radio" name="options" id="option1" value="LOC"> LOC </input><br>
+                    <input type="radio" name="options" id="option2" value="LCOM"> LCOM </input><br>
+                    <input type="radio" name="options" id="option4" value="Number of Methods"> Number of Methods
+                    </input><br>
+                    <input type="radio" name="options" id="option5" value="Number of Public Methods"> Number of Public
+                    Methods </input><br>
+                    <input type="radio" name="options" id="option7" value="Number of Fields"> Number of Fields
+                    </input><br>
+                    <input type="radio" name="options" id="option9" value="WMC"> Weighted Method per Class - WMC
+                    </input><br><br>
+                    <input type="radio" name="options" id="option10" value="Number of Method Line of Code"> Number of Method Line of Code
+                    </input><br><br>
+                    <input type="radio" name="options" id="option12" value="Number of Super Classes"> Number of Superclasses
+                    </input><br><br>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="glyphicon glyphicon-search"></i>
+                        Analyze Code
+                    </button>
+                </form>
+            </div>
+        </div>
+
+        <div class="col-sm-6">
+            <h2>Method Level Metrics</h2>
+            <div class="form-group">
+                <form method="POST" action="/metrics">
+
+                    <input type="radio" name="options" id="option3" value="Cyclomatic Complexity"> Cyclomatic Complexity
+                    </input><br>
+                    <input type="radio" name="options" id="option6" value="Number of Parameters"> Number of Parameters
+                    </input><br><br>
+                    <input type="radio" name="options" id="option10" value="Number of Method Line of Code"> Number of Method Line of Code
+                    </input><br>
+                    <input type="radio" name="options" id="option11" value="Number of Accessors"> Number of Accessors
+                    </input><br><br>
+                    <br><br><br><br>
+                    <button type="submit" class="btn btn-primary">
+                        <i class="glyphicon glyphicon-search"></i>
+                        Analyze Code
+                    </button>
+                </form>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="container">
+    <div className="jumbotron mt-5">
+        <div className="col-sm-8 mx-auto">
+            <table class="table">
+                <thead>
+                    <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
+                    <th scope="col"> <strong>Threshold Result </strong> </th>
+
+                </thead>
+                {%if selected_option == "LCOM" %}
+                <!-- {% include "chart.html" %} -->
+                <tbody>
+                    <!-- For loop logic of jinja template -->
+                    {% set count = namespace(value=0) %}
+                    {% for i in lcom %}
+                    {% if i != '' %}
+                    {% if i != '+-----------------------------+------+' %}
+                    {% if i != 'Calculating LCOM using LCOM4' %}
+                    {% if i != '| Method                      | LCOM |' %}
+                    
+                    <tr>
+                        <td> {{ filename }} </td>
+                        <td> {{ i }} </td>
+                        <td> {{threshold[count.value]}} </td>
+                        {% set count.value = count.value + 1 %}
+                    </tr>
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endif %}
+                    {% endfor %}
+                </tbody>
+                {%endif%}
+                {%if selected_option == "Number of Methods" or selected_option == "Number of Public Methods" or selected_option == "Number of Fields"%}
+                {% include "chart.html" %}
+                <tbody>
+                    <!-- For loop logic of jinja template -->
+                    {% set count = namespace(value=0) %}
+                    {% for filename,field in dict.items() %}
+                    <tr>
+                        <td> {{ filename }} </td>
+                        <td> {{ field }} </td>
+                        <td> {{threshold[count.value]}} </td>
+                        {% set count.value = count.value + 1 %}
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {%endif%}
+                {%if selected_option == "Cyclomatic Complexity"%}
+                <!-- {% include "chart.html" %} -->
+                <tbody>
+                    <!-- For loop logic of jinja template -->
+                    {% for x,y in cc_value2.items() %}
+                    {% for i in y %}
+                    <tr>
+                        <td> {{ x }} </td>
+                        <td> {{ i }} </td>
+                        <td> {{threshold}} </td>
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+                {%endif%}
+                {%if selected_option == "LOC"%}
+                {% include "chart.html" %}
+                <tbody>
+                    <!-- For loop logic of jinja template -->
+                        {% for file,val in loc.items() %}
+                        <tr>
+                        <td> {{ file }} </td>
+                        <td> {{ val }} </td>
+                        <td> {{ "-" }} </td>
+                        </tr>
+                        {% endfor %}
+                </tbody>
+
+                <head>
+                    <meta charset="UTF-8">
+                    <title>Showing Distribution of Detected Design Smells</title>
+                    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+                    <script type="text/javascript">
+                        google.charts.load("current", { packages: ["corechart"] });
+                        google.charts.setOnLoadCallback(drawChart);
+                        function drawChart() {
+                            var data = google.visualization.arrayToDataTable([
+                                {% for key, value in data.items() %}
+                        {% if value is string %}
+                        ['{{ key }}', '{{ value }}'],
+                            {% else %}
+                        ['{{ key }}', {{ value }}],
+                            {% endif %}
+                        {% endfor %}
+                                ]);
+
+                        var options = {
+                            title: 'Classes Distributions',
+                            is3D: true,
+                        };
+
+                        var chart = new google.visualization.PieChart(document.getElementById('piechart_3d'));
+                        function selectHandler() {
+                            var selectedItem = chart.getSelection()[0];
+                            if (selectedItem) {
+                                var topping = data.getValue(selectedItem.row, 0);
+                                alert('Detailed page will be opened for ' + topping);
+                            }
+                        }
+                        google.visualization.events.addListener(chart, 'select', selectHandler);
+                        chart.draw(data, options);
+                      }
+                    </script>
+                </head>
+                <div style="margin: 10px 0 0 10px;width: 1000px">
+                    <h3>Detailed Metrics Analysis</h3>
+
+                    <div id="piechart_3d" style="width: 900px; height: 500px;"></div>
+                </div>
+                {%endif%}
+                {%if selected_option == "Number of Parameters"%}
+                <!-- {% include "chart.html" %} -->
+                <tbody>
+                    <!-- For loop logic of jinja template -->
+                    <tr>
+                    {% set count = namespace(value=0) %}
+                    {% for filename,y in parameters.items() %}
+                    
+                    {% for def,val in y.items() %}
+                    
+                        <td> {{ filename }} </td>
+                        <td> {{ def,val }} </td>
+                        <td> {{threshold[count.value]}} </td>
+                        {% set count.value = count.value + 1 %}
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+                {%endif%}
+                {%if selected_option == "WMC"%}
+                <!-- {% include "chart.html" %} -->
+                <tbody>
+                    {% for x,y in wmc.items() %}
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td> {{ filename }} </td>
+                        <td> {{ x,y }} </td>
+                        <td> {{threshold}} </td>
+                    </tr>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {%endif%}
+            </table>
+        </div>
+    </div>
+
+{% endblock %}
