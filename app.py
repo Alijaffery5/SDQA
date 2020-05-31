@@ -232,11 +232,16 @@ def delete(filename):
     if os.path.exists(file_path):
         try:
             os.remove(file_path)
+            # Deleting data from database
+            get_filename = Code.find({'Source_code_filename' : filename})
+            for x in get_filename:
+                Code.delete_many({'Source_code_filename' : x['Source_code_filename']})
 
             if os.path.exists(file_thumb_path):
                 os.remove(file_thumb_path)
-
+            
             return simplejson.dumps({filename: 'True'})
+
         except:
             return simplejson.dumps({filename: 'False'})
 
@@ -249,14 +254,25 @@ def get_thumbnail(filename):
 
 @app.route("/data/<string:filename>", methods=['GET'])
 def get_file(filename):
-    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER']), filename=filename)
+
+    return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER']), filename= filename)
 
 
-# @app.route("/<string:_id>", methods=['GET'])
-# def get_file2(_id):
-#     user = User.find_one({"_id": ObjectId(_id)})
-#     filename = user["source_code_path"]
-#     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER']), filename=filename)
+def trend_analysis():
+
+    path = 'data\\phones.py'
+    path2 = 'data\\test.py'
+
+    with open(path, 'r') as file1:
+        with open(path2, 'r') as file2:
+            same = set(file2).difference(file1)
+
+    same.discard('\n')
+    array = []
+    for line in same:
+        array.append(line)
+
+    return render_template('trends.html', array = array)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

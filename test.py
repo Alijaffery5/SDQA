@@ -1,15 +1,17 @@
 import os
 
 
-path = 'C:\\Users\\alija\\OneDrive\\Desktop\\Frontend_V2\\data\\phones.py'
-path2 = 'C:\\Users\\alija\\OneDrive\\Desktop\\Frontend_V2\\data\\tables.py'
+def trend_analysis():
 
-with open(path, 'r') as file1:
-    with open(path2, 'r') as file2:
-        same = set(file1).difference(file2)
+    path = 'data\\phones.py'
+    path2 = 'data\\test.py'
 
-same.discard('\n')
+    with open(path, 'r') as file1:
+        with open(path2, 'r') as file2:
+            same = set(file2).symmetric_difference(file1)
 
-with open('some_output_file.txt', 'w') as file_out:
-    for line in same:
-        file_out.write(line)
+    same.discard('\n')
+
+    with open('NEW_FILE!!.txt', 'w') as file_out:
+        for line in same:
+            file_out.write(line)
