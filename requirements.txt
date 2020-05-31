@@ -55,7 +55,7 @@ isort==4.3.21
 itsdangerous==1.1.0
 jdcal==1.4.1
 jieba3k==0.35.1
-Jinja2==2.10
+Jinja2==2.10.1
 jmespath==0.9.5
 joblib==0.14.1
 kiwisolver==1.1.0
@@ -78,7 +78,6 @@ pandas==1.0.1
 passlib==1.7.2
 pdfkit==0.6.1
 pefile==2019.4.18
-Pillow==5.4.1
 psycopg2==2.8.4
 pycodestyle==2.5.0
 pycparser==2.19
