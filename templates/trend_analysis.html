@@ -1,28 +1,22 @@
-{% extends "base_2.html" %}
-{% block title %}File Uploader{% endblock %}
+{% extends 'base.html' %}
+{% block title %}Trend Analysis{% endblock %}
 
 {% block head %}
-{{ super() }}
-<link rel="shortcut icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-<link rel="icon" href="{{ url_for('static', filename='favicon.ico') }}" type="image/x-icon">
-
-<!-- blueimp Gallery styles -->
-<link rel="stylesheet" href="http://blueimp.github.io/Gallery/css/blueimp-gallery.min.css">
-
-<!-- CSS to style the file input field as button and adjust the Bootstrap progress bars -->
 <link rel="stylesheet" type="text/css" href="/static/assets/css/jquery.fileupload.css" />
 <link rel="stylesheet" type="text/css" href="/static/assets/css/jquery.fileupload-ui.css" />
-    {% endblock %}
+<!--     Fonts and icons     -->
+<link rel="stylesheet" type="text/css"
+href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
+
+<link rel="stylesheet" type="text/css" href="/static/assets/css/material-dashboard.css" />
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+{% endblock %}
 
 {% block content %}
-<div class="container" style="margin-left: 20%; padding-top: 60px;">
-    <h1>Upload Python File/s</h1>
-    <br>
-    <blockquote>
-        <p> Click on Add Files Button to Uppload Python Source Code</p>
-    </blockquote>
-    <br>
-    <!-- The file upload form used as target for the file upload widget -->
+
+<div class="container">
     <form id="fileupload" action="//jquery-file-upload.appspot.com/" method="POST" enctype="multipart/form-data">
         <!-- Redirect browsers with JavaScript disabled to the origin page -->
         <noscript><input type="hidden" name="redirect" value="http://blueimp.github.io/jQuery-File-Upload/"></noscript>
@@ -65,18 +59,9 @@
         <!-- The table listing the files available for upload/download -->
         <table role="presentation" class="table table-striped"><tbody class="files"></tbody></table>
     </form>
+    <h2>Trend Analysis for uploaded codes</h2>
+    
 </div>
-<!-- The blueimp Gallery widget -->
-<div id="blueimp-gallery" class="blueimp-gallery blueimp-gallery-controls" data-filter=":even">
-    <div class="slides"></div>
-    <h3 class="title"></h3>
-    <a class="prev">‹</a>
-    <a class="next">›</a>
-    <a class="close">×</a>
-    <a class="play-pause"></a>
-    <ol class="indicator"></ol>
-</div>
-
 {% raw %}
 <!-- The template to display files available for upload -->
 <script id="template-upload" type="text/x-tmpl">
@@ -154,6 +139,7 @@
 {% } %}
 </script>
 {% endraw %}
+
 {% endblock %}
 
 {% block scripts %}

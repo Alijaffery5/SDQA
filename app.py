@@ -257,7 +257,7 @@ def get_file(filename):
 
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER']), filename= filename)
 
-
+@app.route('/trend_analysis', methods=['GET', 'POST'])
 def trend_analysis():
 
     path = 'data\\phones.py'
@@ -272,7 +272,7 @@ def trend_analysis():
     for line in same:
         array.append(line)
 
-    return render_template('trends.html', array = array)
+    return render_template('trend_analysis.html', array = array)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
