@@ -11,51 +11,75 @@
 
         <div class="col-md-6">
             <h2>Class Level Metrics</h2>
-            <div class="form-group">
-                <form method="POST" action="/metrics">
-                    
-                    <input type="radio" name="options" id="option1" value="LOC"> LOC </input><br>
-                    <input type="radio" name="options" id="option2" value="LCOM"> LCOM </input><br>
-                    <input type="radio" name="options" id="option4" value="Number of Methods"> Number of Methods
+            <form method="POST" action="/metrics">
+                <span class="metrics">
+                    <input type="radio" name="options" id="option1" value="LOC" /> LOC <br>
+                </span>
+                <span class="metrics">
+                    <input type="radio" name="options" id="option2" value="LCOM" /> LCOM <br>
+                </span>
+                <span class="metrics">
+                    <input type="radio" name="options" id="option4" value="Number of Methods" /> Number of Methods <br>
+                </span>
+                <span class="metrics">
+                    <input type="radio" name="options" id="option5" value="Number of Public Methods" /> Number of Public
+                    Methods <br>
+                </span>
+                <span class="metrics">
+                    <input type="radio" name="options" id="option7" value="Number of Fields" /> Number of Fields
+                    <br>
+                </span>
+                <span class="metrics">
+                    <input type="radio" name="options" id="option9" value="WMC" /> Weighted Method per Class - WMC
+                    <br>
+                </span>
+
+                <span class="metrics">
+                    <input type="radio" name="options" id="option10" value="Methods-LOC" /> Methods-LOC
+                    <br>
+                </span>
+
+                <span class="metrics">
+                    <input type="radio" name="options" id="option12" value="Number of Super Classes" /> Number of
+                    Superclasses
                     </input><br>
-                    <input type="radio" name="options" id="option5" value="Number of Public Methods"> Number of Public
-                    Methods </input><br>
-                    <input type="radio" name="options" id="option7" value="Number of Fields"> Number of Fields
-                    </input><br>
-                    <input type="radio" name="options" id="option9" value="WMC"> Weighted Method per Class - WMC
-                    </input><br><br>
-                    <input type="radio" name="options" id="option10" value="Number of Method Line of Code"> Number of Method Line of Code
-                    </input><br><br>
-                    <input type="radio" name="options" id="option12" value="Number of Super Classes"> Number of Superclasses
-                    </input><br><br>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="glyphicon glyphicon-search"></i>
-                        Analyze Code
-                    </button>
-                </form>
-            </div>
+                </span>
+
+                <button type="submit" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-search"></i>
+                    Analyze Code
+                </button>
+            </form>
         </div>
 
         <div class="col-sm-6">
             <h2>Method Level Metrics</h2>
-            <div class="form-group">
-                <form method="POST" action="/metrics">
 
-                    <input type="radio" name="options" id="option3" value="Cyclomatic Complexity"> Cyclomatic Complexity
-                    </input><br>
-                    <input type="radio" name="options" id="option6" value="Number of Parameters"> Number of Parameters
-                    </input><br><br>
-                    <input type="radio" name="options" id="option10" value="Number of Method Line of Code"> Number of Method Line of Code
-                    </input><br>
-                    <input type="radio" name="options" id="option11" value="Number of Accessors"> Number of Accessors
-                    </input><br><br>
-                    <br><br><br><br>
-                    <button type="submit" class="btn btn-primary">
-                        <i class="glyphicon glyphicon-search"></i>
-                        Analyze Code
-                    </button>
-                </form>
-            </div>
+            <form method="POST" action="/metrics">
+                <span class="metrics">
+                    <input type="radio" name="options" id="option3" value="Cyclomatic Complexity" /> Cyclomatic
+                    Complexity <br>
+                </span>
+
+                <span class="metrics">
+                    <input type="radio" name="options" id="option6" value="Number of Parameters" /> Number of Parameters
+                    <br>
+                </span>
+
+                <span class="metrics">
+                    <input type="radio" name="options" id="option10" value="Number of Method Line of Code" /> Number of
+                    Method Line of Code <br>
+                </span>
+
+                <span class="metrics">
+                    <input type="radio" name="options" id="option11" value="Number of Accessors" /> Number of Accessors
+                    <br>
+                </span>
+                <button type="submit" class="btn btn-primary">
+                    <i class="glyphicon glyphicon-search"></i>
+                    Analyze Code
+                </button>
+            </form>
         </div>
     </div>
 </div>
@@ -80,7 +104,7 @@
                     {% if i != '+-----------------------------+------+' %}
                     {% if i != 'Calculating LCOM using LCOM4' %}
                     {% if i != '| Method                      | LCOM |' %}
-                    
+
                     <tr>
                         <td> {{ filename }} </td>
                         <td> {{ i }} </td>
@@ -128,13 +152,15 @@
                 {% include "chart.html" %}
                 <tbody>
                     <!-- For loop logic of jinja template -->
-                        {% for file,val in loc.items() %}
-                        <tr>
+                    {% for file,val in loc.items() %}
+                    {% for x in val %}
+                    <tr>
                         <td> {{ file }} </td>
-                        <td> {{ val }} </td>
+                        <td> {{ x }} </td>
                         <td> {{ "-" }} </td>
-                        </tr>
-                        {% endfor %}
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
                 </tbody>
 
                 <head>
@@ -184,11 +210,11 @@
                 <tbody>
                     <!-- For loop logic of jinja template -->
                     <tr>
-                    {% set count = namespace(value=0) %}
-                    {% for filename,y in parameters.items() %}
-                    
-                    {% for def,val in y.items() %}
-                    
+                        {% set count = namespace(value=0) %}
+                        {% for filename,y in parameters.items() %}
+
+                        {% for def,val in y.items() %}
+
                         <td> {{ filename }} </td>
                         <td> {{ def,val }} </td>
                         <td> {{threshold[count.value]}} </td>
@@ -213,8 +239,48 @@
                     {% endfor %}
                 </tbody>
                 {%endif%}
+
+                {%if selected_option == "Number_of_accessors"%}
+                <!-- {% include "chart.html" %} -->
+                <tbody>
+                    {% for x,y in NOA.items() %}
+                    </tr>
+                    <tr>
+                    <tr>
+                        <td> {{ filename }} </td>
+                        <td> {{ x,y }} </td>
+                        <td> {{threshold}} </td>
+                    </tr>
+                    </tr>
+                    {% endfor %}
+                </tbody>
+                {%endif%}
+
+                {%if selected_option == "Methods-LOC"%}
+                <tbody>
+                    <!-- For loop logic of jinja template -->
+                    {% for file,val in NOML.items() %}
+                    <tr>
+                        <td> {{ filename }} </td>
+                        <td> {{ file,val|length }} </td>
+                        <td> {{ threshold }} </td>
+                    </tr>
+                    {% endfor %}
+                    {%endif%}
+
             </table>
         </div>
     </div>
 
-{% endblock %}
+    <script>
+        $('span.metrics').css('cursor', 'pointer').on('click', function () {
+            var radio = $(this).find('input[type=radio]'); // the input
+            if (radio.prop('checked')) {
+                radio.prop('checked', false); // checking false
+            } else {
+                radio.prop('checked', true); //checking true
+            }
+        });
+    </script>
+
+    {% endblock %}

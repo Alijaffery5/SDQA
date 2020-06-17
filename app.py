@@ -61,8 +61,9 @@ class getFile:
                 array.append(temp)
         return array
 
-    def get_full_classname(self):
-        with open("data/phones.py", "r") as file:
+    def get_full_classname(self,files):
+        
+        with open("data/"+ files, "r") as file:
 
             imports = []
             classes = []
@@ -261,7 +262,7 @@ def get_file(filename):
 def trend_analysis():
 
     path = 'data\\phones.py'
-    path2 = 'data\\test.py'
+    path2 = 'data\\phones_1.py'
 
     with open(path, 'r') as file1:
         with open(path2, 'r') as file2:
@@ -292,10 +293,10 @@ def uploadFile():
 def metrics():
     if request.method == 'POST':
         selected_option = request.form['options']
+        lis = obj.get_fileName()
+        item = 0
         if selected_option == "LCOM":
             temp = []
-            lis = obj.get_fileName()
-            item = 0
             for item in lis:
                 # f = open ("data/"+item,"r")
                 # ast = parse(f.read())
@@ -310,8 +311,6 @@ def metrics():
 
                 return render_template("metrics.html", lcom=lcom4(item), threshold=compare_LCOM(item), filename=item, selected_option=selected_option)
         elif selected_option == "Number of Methods":
-            lis = obj.get_fileName()
-            item = 0
             dict = {}
             array_nom = []
             t = []
@@ -324,9 +323,6 @@ def metrics():
             return render_template("metrics.html", dict=dict, threshold=t, selected_option=selected_option, title='NOM Metric Threshold', max=80, labels=labels, values=values)
 
         elif selected_option == "Number of Public Methods":
-
-            lis = obj.get_fileName()
-            item = 0
             dict = {}
             array_nom = []
             t = []
@@ -339,9 +335,6 @@ def metrics():
             return render_template("metrics.html", dict=dict, threshold=t, selected_option=selected_option, title='NOPM Metric Threshold', max=600, labels=labels, values=values)
 
         elif selected_option == "Number of Parameters":
-
-            lis = obj.get_fileName()
-            item = 0
             dict = {}
             array_nom = []
             cn = []
@@ -359,8 +352,6 @@ def metrics():
 
         elif selected_option == "Number of Fields":
 
-            lis = obj.get_fileName()
-            item = 0
             dict = {}
             array_nof = []
             t = []
@@ -376,22 +367,19 @@ def metrics():
         elif selected_option == "LOC":
             data = {'Task': 'Hours per Day', 'Classes lies within Normal Threshold': 1,
                     'Quit Above Threshold': 0, 'Dangerously Above threshold': 0}
-            lis = obj.get_fileName()
-            item = 0
             array_loc_val = []
             dict = {}
             for item in lis:
                 array_loc_val.append(get_LOC(item))
                 dict[item] = LOC_metrics(item)
+
             labels = lis
             values = array_loc_val
 
-            return render_template("metrics.html", loc=dict, selected_option=selected_option, data=data, title='LOC Metric Threshold', max=600, labels=labels, values=values)
+            return render_template("metrics.html", loc=dict, selected_option=selected_option, data=data, title='LOC Metric Threshold', max=300, labels=labels, values=values)
 
         elif selected_option == "Cyclomatic Complexity":
 
-            lis = obj.get_fileName()
-            item = 0
             dict = {}
             array_val = []
             for item in lis:
@@ -401,17 +389,19 @@ def metrics():
             values = array_val
             return render_template("metrics.html", cc_value2=dict, threshold=compare_CC(item), selected_option=selected_option, title='CC Metric Threshold', max=10, labels=labels, values=values)
 
-            # lis = obj.get_fileName()
-            # item = 0
-            # for item in lis:
-
-            #     return render_template("metrics.html", filename = item,  cc_value2 = cyclomatic_complexity(item), threshold = compare_CC(item), selected_option = selected_option)
-
         elif selected_option == "WMC":
-            lis = obj.get_fileName()
-            item = 0
             for item in lis:
                 return render_template("metrics.html", filename=item,  wmc=get_WMC(item), threshold=compare_WMC(item), selected_option=selected_option)
+        
+        elif selected_option == "Number of Accessors":
+            for item in lis:
+                return render_template("metrics.html", filename=item,  NOA = Metrics_defined().Number_of_accessors(item), selected_option=selected_option)
+
+        elif selected_option == "Methods-LOC":
+            
+            for item in lis:
+                return render_template("metrics.html", filename=item, threshold = compare_NOM_LOC(item), NOML = Metrics_defined().get_NOML(item), selected_option=selected_option)
+
         else:
             return render_template("metrics.html", selected_option=selected_option)
 
@@ -425,15 +415,11 @@ def google_pie_chart():
     obj = DesignSmells()
     test = obj.large_class()
     sloc = len(test)
-
+    
     lpl = obj.detect_LPL()
-    number_of_smells = len(lpl)
+    lm = obj.detect_LM()
 
-    test = Metrics_defined().get_AID("phones.py")
-
-    lm = obj.detect_LM("phones.py")
-
-    data = {'Task': 'Hours per Day', 'Long Parameter List': number_of_smells, 'Long Method(LM)': len(obj.detect_LM("phones.py")), 
+    data = {'Task': 'Hours per Day', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
     'Long Base Class List(LBCL)': obj.detect_LBCL(), 'Large Class(LC)': sloc,
     'Swiss Army Knife' : obj.swiss_army_knife(), 'Data Class' : 2}
     return render_template('design_smells.html', data=data, lpl=lpl, lm = lm)
@@ -524,6 +510,8 @@ def cyclomatic_complexity(file):
 
 def LOC_metrics(file):
     cmd = os.popen("radon raw data/"+file).read().split('\n')
+    cmd.pop(0)
+    cmd.pop()
     return cmd
 
 
@@ -717,6 +705,19 @@ def compare_NOP(file):
             temp.append("Violation/Bad")
     return temp
 
+def compare_NOM_LOC(file):
+
+    temp = []
+    for x,val in Metrics_defined().get_NOML(file).items():
+        val = len(val)
+        if val <= 10:
+            temp.append("Good/Common")
+        elif 10 < val <= 32:
+            temp.append("Regular/Casual")
+        elif val > 32:
+            temp.append("Violation/Bad")
+    return temp
+
 
 class Metrics_defined:
 
@@ -724,46 +725,56 @@ class Metrics_defined:
         with open("data/"+file, "r") as file:
             def space_ccount(line): return len(line)-len(line.lstrip(' '))
             methods = {}
+            class_ = ''
+            line_num = 0
+            list = []
             def_start = False
 
-            imports = []
-            classes = []
-
             for line in file:
-                if 'import' in line:
-                    for x in line.split('import')[1].split(','):
-                        imports.append(x.strip())
+                line_num += 1
 
+                #get current class
                 if 'class ' in line:
-                    classes.append(line.split('class')[1][1:-2].strip())
+                    class_ = line.split('class')[1][1:-2].strip()
 
                 # get method bodies
                 tab = 0
                 if 'def' in line:
+                    new_line = line_num
                     tab = space_ccount(line)
                     def_start = True
                     method_name = line.split('(')[0].split('def')[1][1:]
-                    methods[method_name] = []
-
+                    list = []
+        
                 elif def_start and space_ccount(line) >= tab+4:
-                    methods[method_name].append(line.strip(' '))
+                    
+                    list.append(line.strip(' '))
+
+                    methods[method_name] = {
+                    'body': list,
+                    'line': str(new_line),
+                    'class_':  class_
+                    }
+
                 else:
                     def_start = False
         return methods
 
-    def find_parent(self, c):
-        with open("data/phones.py", "r") as file:
+    def find_parent(self, c, file):
+        
+        cleanpath = os.path.abspath("data/"+file)
+        datafile = open(cleanpath, 'r')
 
-            imports = []
-            classes = []
+        imports = []
+        classes = []
 
-            for line in file:
-                if 'import' in line:
-                    for x in line.split('import')[1].split(','):
-                        imports.append(x.strip())
+        for line in datafile:
+            if 'import' in line:
+                for x in line.split('import')[1].split(','):
+                    imports.append(x.strip())
 
-                if 'class ' in line:
-                    classes.append(line.split('class')[1][1:-2].strip())
+            if 'class ' in line:
+                classes.append(line.split('class')[1][1:-2].strip())
         if '(' not in c:
             return ''
 
@@ -780,11 +791,11 @@ class Metrics_defined:
                 if s in x:
                     parent = x
                     break
-        return s + ' ' + Metrics_defined().find_parent(parent)
+        return s + ' ' + Metrics_defined().find_parent(parent, file)
 
-    def dit_list(self, c):
+    def dit_list(self, c, file):
         array = []
-        whole_array = Metrics_defined().find_parent(c)
+        whole_array = Metrics_defined().find_parent(c, file)
         for i in whole_array.split(' '):
             array.append(i)
         return ' '.join(array).split()
@@ -792,15 +803,23 @@ class Metrics_defined:
 
     def Number_of_parameters(self, file):
         counter = 0
-        dic = {}
+        line_num = 0
+        main_dict = {}
+        class_ = ''
         with open("data/"+file, "r") as file:
 
             for line in file:
+                
+                line_num += 1
+                if 'class ' in line:
+                    class_ = line.split('class')[1][1:-2].strip()
                 arr = line.split()
                 if len(arr) < 2:
                     continue
                 if arr[0] == 'def':
-
+                    
+                    new_line = line_num
+                    method_name = line.split('(')[0].split('def')[1][1:]
                     args = ""
                     flag = False
                     for char in line:
@@ -810,12 +829,16 @@ class Metrics_defined:
                             flag = True
                         if flag:
                             args += char
+                        else:
+                            args_arr = args.split(',')
+                            counter = len(args_arr)
+                            main_dict[method_name] = {
+                            'parameters': counter,
+                            'line': str(new_line),
+                            'class_':  class_
+                            }
 
-                    args_arr = args.split(',')
-                    counter = len(args_arr)
-                    dic[line] = counter
-
-        return dic
+        return main_dict
 
 
     def Number_of_accessors(self,file):
