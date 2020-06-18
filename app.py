@@ -413,16 +413,21 @@ def google_pie_chart():
 
     from Design_Smells import DesignSmells
     obj = DesignSmells()
-    test = obj.large_class()
-    sloc = len(test)
-    
+
+    obj2 = Metrics_defined()
+
     lpl = obj.detect_LPL()
     lm = obj.detect_LM()
+    lbcl = obj.detect_LBCL()
+    lc = obj.large_class()
+    lc_len = len(lc)
+    sak = obj.swiss_army_knife()
+    print(sak)
 
     data = {'Task': 'Hours per Day', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
-    'Long Base Class List(LBCL)': obj.detect_LBCL(), 'Large Class(LC)': sloc,
-    'Swiss Army Knife' : obj.swiss_army_knife(), 'Data Class' : 2}
-    return render_template('design_smells.html', data=data, lpl=lpl, lm = lm)
+    'Long Base Class List(LBCL)': len(lbcl), 'Large Class(LC)': lc_len,
+    'Swiss Army Knife' : sak, 'Data Class' : 2}
+    return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc)
 
 
 @app.route('/hotspot', methods=['GET'])
@@ -865,28 +870,36 @@ class Metrics_defined:
         return dic
 
     def get_LOC_class(self,file):
+
         counter = 0
+        main_dic = {}
         dic = {}
+        class_ = ''
+        line_num = 0
+        new_line = ''
+        
         with open("data/"+file, "r") as file:
             
-            class_name = ''
-            previous_name = ''
             for line in file:
+                line_num += 1
                 if 'class ' in line:
-                    previous_name = class_name
-                    dic[previous_name] = counter
-                    class_name = line.split('class')[1][1:-2].strip()
+                    new_line = line_num
+                    class_ = line.split('class')[1][1:-2].strip()
                     counter = 0
 
                 elif not line.strip():
                     continue
                 else:
                     counter += 1
+                    main_dic[class_] = {
+                        'line_number': str(new_line),
+                        'value':  counter
+                    }
 
-        if '' in dic:
-            del dic['']
+        if '' in main_dic:
+            del main_dic['']
 
-        return dic
+        return main_dic
 
 
     def get_AID(self,file):

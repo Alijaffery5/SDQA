@@ -33,18 +33,24 @@ class DesignSmells():
         return smells
 
     def detect_LBCL(self):
-        counter = 0
-        for i in getFile.get_fileName(self):
-            for class_ in getFile.get_full_classname(self,i):
-                x = len(Metrics_defined.dit_list(self, class_ , i))
+
+        smells = {}
+        for file in getFile.get_fileName(self):
+            for class_ in getFile.get_full_classname(self,file):
+                dit = Metrics_defined.dit_list(self, class_ , file)
+                x = len(dit)
                 if x <= 2:
                     continue
                 elif 2 < x <= 4:
                     continue
                 elif x > 4:
-                    counter += 1
+                    smells [file] = {
+                    'DIT List' : dit,
+                    'value' : x,
+                    'normal' : "1-4"
+                    }
                     continue
-        return counter
+        return smells
 
     def detect_LPL(self):
 
@@ -110,14 +116,19 @@ class DesignSmells():
 
     def large_class(self):  ## LOC < 300
         
-        dict = {}
-        for i in getFile.get_fileName(self):
-            loc = Metrics_defined().get_LOC_class(i)
-            for x,y in loc.items():
-                if y > 50:
-                    dict[x] = y
+        smells = {}
+        for file in getFile.get_fileName(self):
+            loc = Metrics_defined().get_LOC_class(file)
+            for class_ , details in loc.items():
+                if details['value'] > 50:
+                    smells [file] = {
+                    'line_number' : details['line_number'],
+                    'class_name' : class_,
+                    'loc' : details['value'],
+                    'normal' : "1-300"
+                    }
 
-        return dict
+        return smells
 
 
     def feature_envy(self):

@@ -36,7 +36,19 @@
         var smell_name = data.getValue(selectedItem.row, 0);
         if (smell_name == 'Long Method(LM)') {
           $('#table_div').find('td').detach();
+          $('#table_div').find('th').detach();
           if ($('#table_div table').length > 0) {
+            
+            var th_row = $('<tr></tr>');
+            var col1 = $('<th></th>').text('Filename');
+            var col2 = $('<th></th>').text('Line Number');
+            var col3 = $('<th></th>').text('Class Name');
+            var col4 = $('<th></th>').text('Method Name');
+            var col5 = $('<th></th>').text('Method Length');
+            var col6 = $('<th></th>').text('Normal Threshold');
+            th_row.append(col1,col2, col3,col4,col5,col6);
+            $('#table_div thead').append(th_row);
+
             {% for x, y in lm.items() %}
             var row = $('<tr class = table-danger ></tr>');
             var col1 = $('<td></td>').addClass('bar').text('{{ x }}');
@@ -53,28 +65,20 @@
             
           }
         }
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
 
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
-          }
-        }
         else if (smell_name == 'Long Parameter List') {
           $('#table_div').find('td').detach();
+          $('#table_div').find('th').detach();
           if ($('#table_div table').length > 0) {
+            var th_row = $('<tr></tr>');
+            var col1 = $('<th></th>').text('Filename');
+            var col2 = $('<th></th>').text('Line Number');
+            var col3 = $('<th></th>').text('Class Name');
+            var col4 = $('<th></th>').text('Method Name');
+            var col5 = $('<th></th>').text('Number of Parameters');
+            var col6 = $('<th></th>').text('Normal Threshold');
+            th_row.append(col1,col2, col3,col4,col5,col6);
+            $('#table_div thead').append(th_row);
             {% for x, y in lpl.items() %}
             var row = $('<tr class = table-danger ></tr>');
             var col1 = $('<td></td>').addClass('bar').text('{{ x }}');
@@ -94,224 +98,110 @@
 
         else if (smell_name == 'Data Class') {
           $('#table_div').find('td').detach();
+          $('#table_div').find('th').detach();
           if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
+            var th_row = $('<tr></tr>');
+            var col1 = $('<th></th>').text('Filename');
+            var col2 = $('<th></th>').text('Line Number');
+            var col3 = $('<th></th>').text('Class Name');
+            var col4 = $('<th></th>').text('Method Name');
+            var col5 = $('<th></th>').text('Method Length');
+            var col6 = $('<th></th>').text('Normal Threshold');
+            th_row.append(col1,col2, col3,col4,col5,col6);
+            $('#table_div thead').append(th_row);
             {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
+            var row = $('<tr class = table-danger ></tr>');
+            var col1 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col2 = $('<td></td>').addClass('bar').text('{{ y['line_number'] }}');
+            var col3 = $('<td></td>').addClass('bar').text('{{ y['class_name'] }}');
+            var col4 = $('<td></td>').addClass('bar').text('{{ y['function_'] }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y['value'] }}');
+            var col6 = $('<td></td>').addClass('bar').text('{{ y['normal'] }}');
+            row.append(col1, col2, col3, col4, col5, col6);
+            $('#table_div table').append(row);
             {% endfor %}
 
             $('#table_div h2').text(smell_name);
             $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+          }
+        }
+
+        else if (smell_name == 'Long Base Class List(LBCL)') {
+          $('#table_div').find('td').detach();
+          $('#table_div').find('th').detach();
+          if ($('#table_div table').length > 0) {
+            var th_row = $('<tr></tr>');
+            var col1 = $('<th></th>').text('Filename');
+            var col2 = $('<th></th>').text('DIT List');
+            var col3 = $('<th></th>').text('DIT Value');
+            var col4 = $('<th></th>').text('Normal Threshold');
+            th_row.append(col1,col2, col3,col4);
+            $('#table_div thead').append(th_row);
+            {% for x, y in lbcl.items() %}
+            var row = $('<tr class = table-danger ></tr>');
+            var col1 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col2 = $('<td></td>').addClass('bar').text('{{ y['DIT List'] }}');
+            var col3 = $('<td></td>').addClass('bar').text('{{ y['value'] }}');
+            var col4 = $('<td></td>').addClass('bar').text('{{ y['normal'] }}');
+            row.append(col1, col2, col3, col4);
             $('#table_div table').append(row);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
 
           }
         }
 
         else if (smell_name == 'Large Class(LC)') {
           $('#table_div').find('td').detach();
+          $('#table_div').find('th').detach();
           if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+            var th_row = $('<tr></tr>');
+            var col1 = $('<th></th>').text('Filename');
+            var col2 = $('<th></th>').text('Line Number');
+            var col3 = $('<th></th>').text('Class Name');
+            var col4 = $('<th></th>').text('Class LOC');
+            var col5 = $('<th></th>').text('Normal Threshold');
+            th_row.append(col1,col2, col3,col4,col5);
+            $('#table_div thead').append(th_row);
+            {% for x, y in lc.items() %}
+            var row = $('<tr class = table-danger ></tr>');
+            var col1 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col2 = $('<td></td>').addClass('bar').text('{{ y['line_number'] }}');
+            var col3 = $('<td></td>').addClass('bar').text('{{ y['class_name'] }}');
+            var col4 = $('<td></td>').addClass('bar').text('{{ y['loc'] }}');
+            var col5 = $('<td></td>').addClass('bar').text('{{ y['normal'] }}');
             row.append(col1, col2, col3, col4, col5);
+            $('#table_div table').append(row);
             {% endfor %}
 
             $('#table_div h2').text(smell_name);
             $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
           }
         }
 
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
+      //   else if (smell_name == 'Large Class(LC)') {
+      //     $('#table_div').find('td').detach();
+      //     if ($('#table_div table').length > 0) {
+      //       var row = $('<tr></tr>');
+      //       {% for x, y in lm.items() %}
+      //       var col1 = $('<td></td>').addClass('bar').text('Testing.py');
+      //       var col2 = $('<td></td>').addClass('bar').text(80);
+      //       var col3 = $('<td></td>').addClass('bar').text('Iphone');
+      //       var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
+      //       var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
+      //       row.append(col1, col2, col3, col4, col5);
+      //       {% endfor %}
 
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
+      //       $('#table_div h2').text(smell_name);
+      //       $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+      //       $('#table_div table').append(row);
 
-          }
-        }
-
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
-
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
-          }
-        }
-
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
-
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
-          }
-        }
-
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
-
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
-          }
-        }
-
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
-
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
-          }
-        }
-
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
-
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
-          }
-        }
-
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
-
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
-          }
-        }
-
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
-
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
-          }
-        }
-
-        else if (smell_name == 'Large Class(LC)') {
-          $('#table_div').find('td').detach();
-          if ($('#table_div table').length > 0) {
-            var row = $('<tr></tr>');
-            {% for x, y in lm.items() %}
-            var col1 = $('<td></td>').addClass('bar').text('Testing.py');
-            var col2 = $('<td></td>').addClass('bar').text(80);
-            var col3 = $('<td></td>').addClass('bar').text('Iphone');
-            var col4 = $('<td></td>').addClass('bar').text('{{ x }}');
-            var col5 = $('<td></td>').addClass('bar').text('{{ y }}');
-            row.append(col1, col2, col3, col4, col5);
-            {% endfor %}
-
-            $('#table_div h2').text(smell_name);
-            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
-            $('#table_div table').append(row);
-
-          }
-        }
-      }
+      //     }
+      //   }
+      // }
+    }
     }
     google.visualization.events.addListener(chart, 'select', selectHandler);
     google.visualization.events.addListener(chart, 'onmouseover', pointer);
@@ -351,32 +241,8 @@
         <div class="card-body table-responsive">
           <table class="table table-hover">
 
-            <thead>
-              <tr style="font-weight: bold;">
-                <th scope="col"> Filename</th>
-                <th scope="col"> Line Number</th>
-                <th scope="col"> Class Name</th>
-                <th scope="col"> Method Name</th>
-                <th scope="col"> Method Length</th>
-                <th scope="col"> Normal Threshold</th>
-              </tr>
-            </thead>
-            <tbody>
-              <!-- Displaying table for Hotspot Analysis -->
-              <!-- <tr class="table-danger">
-                              <td> Phones.py</td>
-                              <td>77</td>
-                              <td> Iphone</td>
-                              {% for x,y in lm.items() %}
-                              <td> {{ x }} </td>
-                              <td> {{y}} </td>
-                              {% endfor %}
-                              <td>
-                                <=30
-                              </td>
-                          </tr> -->
-
-            </tbody>
+           <thead>
+              </thead>
           </table>
         </div>
       </div>
