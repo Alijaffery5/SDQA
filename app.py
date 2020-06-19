@@ -427,14 +427,14 @@ def google_pie_chart():
     lc_len = len(lc)
     #5 remaining
     sak = obj.swiss_army_knife()
+    # print(obj2.Number_of_SUP("phones.py"))
     #6
     data_class = obj.data_class()
-    # print(obj2.Number_of_accessors("phones.py"))
 
     data = {'Task': 'Hours per Day', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
     'Long Base Class List(LBCL)': len(lbcl), 'Large Class(LC)': lc_len,
-    'Swiss Army Knife' : sak, 'Data Class' : len(data_class)}
-    return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc, data_class=data_class)
+    'Swiss Army Knife' : len(sak), 'Data Class' : len(data_class)}
+    return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc, data_class=data_class, sak=sak)
 
 
 @app.route('/hotspot', methods=['GET'])
@@ -790,7 +790,8 @@ class Metrics_defined:
         if '(' not in c:
             return ''
 
-        s = c[c.find("(")+1:c.find(")")]
+        s = c[c.find("(")+1:c.find(")")].split(',')
+        s = s[0]
         parent = ''
         flag = True
         for x in imports:
@@ -848,6 +849,38 @@ class Metrics_defined:
                             'parameters': counter,
                             'line': str(new_line),
                             'class_':  class_
+                            }
+
+        return main_dict
+
+    def Number_of_SUP (self, file):
+        counter = 0
+        line_num = 0
+        main_dict = {}
+        class_ = ''
+        with open("data/"+file, "r") as file:
+
+            for line in file:
+                
+                line_num += 1
+                if 'class ' in line:
+                    new_line = line_num
+                    class_ = line.split('class')[1][1:-2].strip()
+                    args = ""
+                    flag = False
+                    for char in line:
+                        if char == ')':
+                            flag = False
+                        if char == '(':
+                            flag = True
+                        if flag:
+                            args += char
+                        else:
+                            args_arr = args.split(',')
+                            counter = len(args_arr)
+                            main_dict[class_] = {
+                            'SUP': counter,
+                            'line_number': str(new_line),
                             }
 
         return main_dict

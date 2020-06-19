@@ -48,7 +48,7 @@ class DesignSmells():
                     continue
                 elif value > 4:
                     for x in dit:
-                        dit_str += x + ', '
+                        dit_str += x + ',  '
                     smells [file] = {
                     'DIT List' : dit_str,
                     'value' : value,
@@ -111,18 +111,25 @@ class DesignSmells():
         return dict
 
     def swiss_army_knife(self):
-        counter = 0
-        for i in getFile.get_fileName(self):
-            for class_ in getFile.get_full_classname(self,i):
-                x = len(Metrics_defined.dit_list(self, class_ , i))
-                if x <= 2:
+
+        smell_dict = {}
+        for file in getFile.get_fileName(self):
+            sup = Metrics_defined.Number_of_SUP(self, file)
+            for class_name, details in sup.items():
+                if details['SUP'] <= 2:
                     continue
-                elif 2 < x <= 4:
+                elif 2 < details['SUP'] < 4:
                     continue
-                elif x >= 4:
-                    counter += 1
+                elif details['SUP'] >= 4:
+                    smell_dict [file] = {
+                    'class_name' : class_name,
+                    'line_number' : details['line_number'],
+                    'value' : details['SUP'],
+                    'normal' : "1-4"
+                    }
                     continue
-        return counter
+                
+        return smell_dict
 
     def large_class(self):  ## LOC < 300
         
