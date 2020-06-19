@@ -35,18 +35,23 @@ class DesignSmells():
     def detect_LBCL(self):
 
         smells = {}
+        
+
         for file in getFile.get_fileName(self):
             for class_ in getFile.get_full_classname(self,file):
                 dit = Metrics_defined.dit_list(self, class_ , file)
-                x = len(dit)
-                if x <= 2:
+                dit_str = ''
+                value = len(dit)
+                if value <= 2:
                     continue
-                elif 2 < x <= 4:
+                elif 2 < value <= 4:
                     continue
-                elif x > 4:
+                elif value > 4:
+                    for x in dit:
+                        dit_str += x + ', '
                     smells [file] = {
-                    'DIT List' : dit,
-                    'value' : x,
+                    'DIT List' : dit_str,
+                    'value' : value,
                     'normal' : "1-4"
                     }
                     continue
@@ -79,12 +84,17 @@ class DesignSmells():
 
     def data_class(self):
         
-        for i in getFile.get_fileName(self):
-            dict = Metrics_defined().Number_of_accessors(i)
-            smell_dict = {}
-            for class_name,val in dict.items():
-                if val >= 4:
-                    smell_dict[class_name] = val
+        smell_dict = {}
+
+        for file in getFile.get_fileName(self):
+            dict = Metrics_defined().Number_of_accessors(file)
+            for class_name,value in dict.items():
+                if value >= 4:
+                    smell_dict [file] = {
+                    'class_name' : class_name,
+                    'value' : value,
+                    'normal' : "1-4"
+                    }
                     continue
 
         return smell_dict

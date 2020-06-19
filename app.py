@@ -416,18 +416,25 @@ def google_pie_chart():
 
     obj2 = Metrics_defined()
 
+    #1
     lpl = obj.detect_LPL()
+    #2
     lm = obj.detect_LM()
+    #3
     lbcl = obj.detect_LBCL()
+    #4
     lc = obj.large_class()
     lc_len = len(lc)
+    #5 remaining
     sak = obj.swiss_army_knife()
-    print(sak)
+    #6
+    data_class = obj.data_class()
+    # print(obj2.Number_of_accessors("phones.py"))
 
     data = {'Task': 'Hours per Day', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
     'Long Base Class List(LBCL)': len(lbcl), 'Large Class(LC)': lc_len,
-    'Swiss Army Knife' : sak, 'Data Class' : 2}
-    return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc)
+    'Swiss Army Knife' : sak, 'Data Class' : len(data_class)}
+    return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc, data_class=data_class)
 
 
 @app.route('/hotspot', methods=['GET'])
