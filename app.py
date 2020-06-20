@@ -427,7 +427,7 @@ def google_pie_chart():
     lc_len = len(lc)
     #5 remaining
     sak = obj.swiss_army_knife()
-    # print(obj2.Number_of_SUP("phones.py"))
+    print(obj2.get_ald("phones.py"))
     #6
     data_class = obj.data_class()
 
@@ -806,6 +806,89 @@ class Metrics_defined:
                     break
         return s + ' ' + Metrics_defined().find_parent(parent, file)
 
+
+    def get_aid(self, file):
+        with open("data/"+file, "r") as file:
+            class_ = ''
+            imports = []
+            dict = {}
+            flag = False
+            counter = 0
+
+            for line in file:
+
+                if 'import' in line:
+                    for x in line.split('import')[1].split(','):
+                        imports.append(x.strip())
+
+                if 'class ' in line:
+                    class_ = line.split('class')[1][1:-2].strip()
+
+
+                if line.find('__init__') != -1:
+                    flag = True
+                    continue
+
+                if flag:
+                    if line.find("self.") != -1:
+                        word = line.split()
+                        for x in imports:
+                            for y in word:
+                                if y.find(x) != -1:
+                                    counter += 1
+                                    dict[class_] = {
+                                    'AID': counter
+                                    }
+
+                else:
+                    flag = False                
+
+        return dict
+
+    def get_ald(self, file):
+        with open("data/"+file, "r") as file:
+            class_ = ''
+            imports = []
+            dict = {}
+            flag = False
+            counter = 0
+
+            for line in file:
+
+                if 'import' in line:
+                    for x in line.split('import')[1].split(','):
+                        imports.append(x.strip())
+
+                if 'class ' in line:
+                    class_ = line.split('class')[1][1:-2].strip()
+
+
+                if line.find('__init__') != -1:
+                    flag = True
+                    continue
+
+                elif flag:
+                    if line.find("self.") != -1:
+                        word = line.split()
+                        # for x in word:
+                            # print(x)
+                        
+                        for y in word:
+                            for x in imports:
+                                print(y)
+                                if y != x:
+                                    counter += 1
+                                    dict[class_] = {
+                                    'AID': counter
+                                    }
+                            else:
+                                counter = 0
+                    else:
+                        flag = False
+
+        return dict
+
+
     def dit_list(self, c, file):
         array = []
         whole_array = Metrics_defined().find_parent(c, file)
@@ -913,7 +996,6 @@ class Metrics_defined:
 
         counter = 0
         main_dic = {}
-        dic = {}
         class_ = ''
         line_num = 0
         new_line = ''
