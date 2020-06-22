@@ -264,6 +264,9 @@ def trend_analysis():
     path = 'data\\phones.py'
     path2 = 'data\\phones_1.py'
 
+    obj = getFile()
+    lis = obj.get_fileName()
+
     with open(path, 'r') as file1:
         with open(path2, 'r') as file2:
             same = set(file2).difference(file1)
@@ -273,7 +276,7 @@ def trend_analysis():
     for line in same:
         array.append(line)
 
-    return render_template('trend_analysis.html', array = array)
+    return render_template('trend_analysis.html', array = array, lis = lis)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -414,8 +417,6 @@ def google_pie_chart():
     from Design_Smells import DesignSmells
     obj = DesignSmells()
 
-    obj2 = Metrics_defined()
-
     #1
     lpl = obj.detect_LPL()
     #2
@@ -427,14 +428,16 @@ def google_pie_chart():
     lc_len = len(lc)
     #5 remaining
     sak = obj.swiss_army_knife()
-    print(obj2.get_ald("phones.py"))
     #6
     data_class = obj.data_class()
 
+    total = len(lpl) + len(lm) + len(lbcl) + lc_len + len(sak) + len(data_class)
+    print(total)
     data = {'Task': 'Hours per Day', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
     'Long Base Class List(LBCL)': len(lbcl), 'Large Class(LC)': lc_len,
     'Swiss Army Knife' : len(sak), 'Data Class' : len(data_class)}
-    return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc, data_class=data_class, sak=sak)
+    return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc, data_class=data_class, sak=sak, 
+    total = total)
 
 
 @app.route('/hotspot', methods=['GET'])
@@ -446,7 +449,27 @@ def hotspot_analysis():
 def dashboard():
     bar_labels = labels
     bar_values = values
-    return render_template('dashboard.html', title='Lines of Codes Uploaded each Month', max=4800, labels=bar_labels, values=bar_values)
+    from Design_Smells import DesignSmells
+    obj = DesignSmells()
+     #1
+    lpl = obj.detect_LPL()
+    #2
+    lm = obj.detect_LM()
+    #3
+    lbcl = obj.detect_LBCL()
+    #4
+    lc = obj.large_class()
+    lc_len = len(lc)
+    #5 remaining
+    sak = obj.swiss_army_knife()
+    #6
+    data_class = obj.data_class()
+    total = len(lpl) + len(lm) + len(lbcl) + lc_len + len(sak) + len(data_class)
+    obj = getFile()
+    lis = obj.get_fileName()
+    codes = len(lis)
+    return render_template('dashboard.html', title='Lines of Codes Uploaded each Month', total = total, max=4800, labels=bar_labels, values=bar_values,
+    codes = codes)
 
 
 @app.route('/summary')
