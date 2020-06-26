@@ -2,6 +2,95 @@
 {% block title %}Detailed Metric Analysis{% endblock %}
 
 {% block content %}
+<head>
+    <style>
+        .funkyradio div {
+  clear: both;
+  overflow: hidden;
+}
+
+.funkyradio label {
+  width: 100%;
+  border-radius: 3px;
+  border: 1px solid #D1D3D4;
+  font-weight: normal;
+}
+
+.funkyradio input[type="radio"]:empty,
+.funkyradio input[type="checkbox"]:empty {
+  display: none;
+}
+
+.funkyradio input[type="radio"]:empty ~ label,
+.funkyradio input[type="checkbox"]:empty ~ label {
+  position: relative;
+  line-height: 2.5em;
+  text-indent: 3.25em;
+  margin-top: 2em;
+  cursor: pointer;
+  -webkit-user-select: none;
+     -moz-user-select: none;
+      -ms-user-select: none;
+          user-select: none;
+}
+
+.funkyradio input[type="radio"]:empty ~ label:before,
+.funkyradio input[type="checkbox"]:empty ~ label:before {
+  position: absolute;
+  display: block;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  content: '';
+  width: 2.5em;
+  background: #D1D3D4;
+  border-radius: 3px 0 0 3px;
+}
+
+.funkyradio input[type="radio"]:hover:not(:checked) ~ label,
+.funkyradio input[type="checkbox"]:hover:not(:checked) ~ label {
+  color: #888;
+}
+
+.funkyradio input[type="radio"]:hover:not(:checked) ~ label:before,
+.funkyradio input[type="checkbox"]:hover:not(:checked) ~ label:before {
+  content: '\2714';
+  text-indent: .9em;
+  color: #C2C2C2;
+}
+
+.funkyradio input[type="radio"]:checked ~ label,
+.funkyradio input[type="checkbox"]:checked ~ label {
+  color: black;
+}
+
+.funkyradio input[type="radio"]:checked ~ label:before,
+.funkyradio input[type="checkbox"]:checked ~ label:before {
+  content: '\2714';
+  text-indent: .9em;
+  color: black;
+  background-color: #ccc;
+}
+
+.funkyradio input[type="radio"]:focus ~ label:before,
+.funkyradio input[type="checkbox"]:focus ~ label:before {
+  box-shadow: 0 0 0 3px #999;
+}
+
+.funkyradio-default input[type="radio"]:checked ~ label:before,
+.funkyradio-default input[type="checkbox"]:checked ~ label:before {
+  color: black;
+  background-color: #ccc;
+}
+
+.funkyradio-primary input[type="radio"]:checked ~ label:before,
+.funkyradio-primary input[type="checkbox"]:checked ~ label:before {
+  color: #fff;
+  background-color: #337ab7;
+}
+
+    </style>
+</head>
 
 <div class="container">
 
@@ -12,38 +101,41 @@
         <div class="col-md-6">
             <h2>Class Level Metrics</h2>
             <form method="POST" action="/metrics">
-                <span class="metrics">
-                    <input type="radio" name="options" id="option1" value="LOC" /> LOC <br>
-                </span>
-                <span class="metrics">
-                    <input type="radio" name="options" id="option2" value="LCOM" /> LCOM <br>
-                </span>
-                <span class="metrics">
-                    <input type="radio" name="options" id="option4" value="Number of Methods" /> Number of Methods <br>
-                </span>
-                <span class="metrics">
-                    <input type="radio" name="options" id="option5" value="Number of Public Methods" /> Number of Public
-                    Methods <br>
-                </span>
-                <span class="metrics">
-                    <input type="radio" name="options" id="option7" value="Number of Fields" /> Number of Fields
-                    <br>
-                </span>
-                <span class="metrics">
-                    <input type="radio" name="options" id="option9" value="WMC" /> Weighted Method per Class - WMC
-                    <br>
-                </span>
-
-                <span class="metrics">
-                    <input type="radio" name="options" id="option10" value="Methods-LOC" /> Methods-LOC
-                    <br>
-                </span>
-
-                <span class="metrics">
-                    <input type="radio" name="options" id="option12" value="Number of Super Classes" /> Number of
-                    Superclasses
-                    </input><br>
-                </span>
+                <div class="funkyradio">
+                    <div class="funkyradio-default">
+                        <input type="radio" name="options" id="radio1" value="LOC" checked/>
+                        <label for="radio1">LOC</label>
+                    </div>
+                    <div class="funkyradio-primary">
+                        <input type="radio" name="options" id="radio2" value="LCOM" />
+                        <label for="radio2">LCOM</label>
+                    </div>
+                    <div class="funkyradio-primary">
+                        <input type="radio" name="options" id="radio3" value="Number of Methods" />
+                        <label for="radio3">Number of Methods</label>
+                    </div>
+                    <div class="funkyradio-primary">
+                        <input type="radio" name="options" id="radio4" value="Number of Public Methods" />
+                        <label for="radio4">Number of Public Methods</label>
+                    </div>
+                    <div class="funkyradio-primary">
+                        <input type="radio" name="options" id="radio5" value="Number of Fields" />
+                        <label for="radio5">Number of Fields</label>
+                    </div>
+                    <div class="funkyradio-primary">
+                        <input type="radio" name="options" id="radio6" value="WMC" />
+                        <label for="radio6">Weighted Method per Class - WMC</label>
+                    </div>
+                    <div class="funkyradio-primary">
+                        <input type="radio" name="options" id="radio7" value="Methods-LOC" />
+                        <label for="radio7">Methods-LOC</label>
+                    </div>
+                    <div class="funkyradio-primary">
+                        <input type="radio" name="options" id="radio8" value="Number of Super Classes" />
+                        <label for="radio8">Number of Superclasses</label>
+                    </div>
+                    
+                </div>
 
                 <button type="submit" class="btn btn-primary">
                     <i class="glyphicon glyphicon-search"></i>
@@ -56,25 +148,25 @@
             <h2>Method Level Metrics</h2>
 
             <form method="POST" action="/metrics">
-                <span class="metrics">
-                    <input type="radio" name="options" id="option3" value="Cyclomatic Complexity" /> Cyclomatic
-                    Complexity <br>
-                </span>
+                <div class="funkyradio">
+                <div class="funkyradio-primary">
+                    <input type="radio" name="options" id="radio9" value="Cyclomatic Complexity"/>
+                    <label for="radio9">Cyclomatic Complexity</label>
+                </div>
+                <div class="funkyradio-primary">
+                    <input type="radio" name="options" id="radio10" value="Number of Parameters" />
+                    <label for="radio10">Number of Parameters</label>
+                </div>
+                <div class="funkyradio-primary">
+                    <input type="radio" name="options" id="radio11" value="Number of Method Line of Code" />
+                    <label for="radio11">Number of Method Line of Code</label>
+                </div>
+                <div class="funkyradio-primary">
+                    <input type="radio" name="options" id="radio12" value="Number of Accessors" />
+                    <label for="radio12">Number of Accessors</label>
+                </div>
+            </div>
 
-                <span class="metrics">
-                    <input type="radio" name="options" id="option6" value="Number of Parameters" /> Number of Parameters
-                    <br>
-                </span>
-
-                <span class="metrics">
-                    <input type="radio" name="options" id="option10" value="Number of Method Line of Code" /> Number of
-                    Method Line of Code <br>
-                </span>
-
-                <span class="metrics">
-                    <input type="radio" name="options" id="option11" value="Number of Accessors" /> Number of Accessors
-                    <br>
-                </span>
                 <button type="submit" class="btn btn-primary">
                     <i class="glyphicon glyphicon-search"></i>
                     Analyze Code

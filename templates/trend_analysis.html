@@ -20,6 +20,11 @@ href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab
         <table class="table table-hover">
 
          <thead>
+             <th>
+                Previous Version
+             </th>
+
+             <th> Upload evolved Version </th>
             </thead>
             <tbody>
                 {% for files in lis %}
@@ -27,10 +32,25 @@ href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab
                     <td>
                         {{ files }}
                     </td>
+                    <td>
+                        <form method="POST">
+                            <input type="file" id="file" name="file" accept=".py">
+                            <button type="submit" class="btn btn-primary start">
+                                <i class="glyphicon glyphicon-upload"></i>
+                                <span>Start upload</span>
+                            </button>
+                        </form>
+                    </td>
                 </tr>
                 {% endfor %}
             </tbody>
         </table>
+        
+            {% for data in array %}
+            <p>    {{data}} </p>
+            {% endfor %}
+
+            {  }
       </div>
 </div>
 

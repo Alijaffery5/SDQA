@@ -37,6 +37,7 @@ User = mydb["user_profiling"]
 # Upload file Configuration
 app.config['UPLOAD_FOLDER'] = 'data/'
 app.config['THUMBNAIL_FOLDER'] = 'data/thumbnail/'
+app.config['THUMBNAIL_FOLDER2'] = 'data/thumbnail/temp'
 app.config['MAX_CONTENT_LENGTH'] = 50 * 1024 * 1024
 ALLOWED_EXTENSIONS = set(['py'])
 IGNORED_FILES = set(['.gitignore'])
@@ -104,11 +105,11 @@ def gen_file_name(filename):
 def create_thumbnail(image):
     try:
         base_width = 80
-        img = Image.open(os.path.join(app.config['UPLOAD_FOLDER'], image))
+        img = Image.open(os.path.join(app.config['THUMBNAIL_FOLDER'], image))
         w_percent = (base_width / float(img.size[0]))
         h_size = int((float(img.size[1]) * float(w_percent)))
         img = img.resize((base_width, h_size), PIL.Image.ANTIALIAS)
-        img.save(os.path.join(app.config['THUMBNAIL_FOLDER'], image))
+        img.save(os.path.join(app.config['THUMBNAIL_FOLDER2'], image))
 
         return True
 
@@ -194,8 +195,8 @@ def upload():
                 flash('Python File Uploaded Successfully', 'success')
 
                 # create thumbnail after saving
-                if mime_type.startswith('image'):
-                    create_thumbnail(filename)
+                if mime_type.startswith('text/plain'):
+                    create_thumbnail('py-logo.png')
 
                 # get file size after saving
                 size = os.path.getsize(uploaded_file_path)
@@ -269,14 +270,16 @@ def trend_analysis():
 
     with open(path, 'r') as file1:
         with open(path2, 'r') as file2:
-            same = set(file2).difference(file1)
+            same = set(file2).symmetric_difference(file1)
 
     same.discard('\n')
     array = []
     for line in same:
         array.append(line)
 
-    return render_template('trend_analysis.html', array = array, lis = lis)
+    temp = get_file("phones.py")
+
+    return render_template('trend_analysis.html', array = array, lis = lis, get_file = get_file)
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

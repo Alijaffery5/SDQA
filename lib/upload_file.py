@@ -24,7 +24,7 @@ class uploadfile():
     def get_file(self):
         if self.type != None:
             # POST an image
-            if self.type.startswith('image'):
+            if self.type.startswith('text/plain'):
                 return {"name": self.name,
                         "type": self.type,
                         "size": self.size, 
