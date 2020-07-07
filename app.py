@@ -259,27 +259,43 @@ def get_file(filename):
 
     return send_from_directory(os.path.join(app.config['UPLOAD_FOLDER']), filename= filename)
 
+def get_contents(filename):
+    file_path = os.path.join(filename)
+    content = ''
+    with open(file_path, 'r') as file:
+        content = file.read()
+        content = content.split('\n')
+        return content
+
 @app.route('/trend_analysis', methods=['GET', 'POST'])
 def trend_analysis():
-
-    path = 'data\\phones.py'
-    path2 = 'data\\phones_1.py'
 
     obj = getFile()
     lis = obj.get_fileName()
 
-    with open(path, 'r') as file1:
-        with open(path2, 'r') as file2:
-            same = set(file2).symmetric_difference(file1)
+    if request.method == 'POST':
+        previous = request.form.get('file2')
+        evolved_file = request.form['file']
+        
+        previous_version = 'data/' + previous
+        new_version = 'data/'+ evolved_file
 
-    same.discard('\n')
-    array = []
-    for line in same:
-        array.append(line)
+        with open(previous_version, 'r') as file1:
+            with open(new_version, 'r') as file2:
+                same = set(file2).symmetric_difference(file1)
 
-    temp = get_file("phones.py")
+        same.discard('\n')
+        array = []
+        for line in same:
+            array.append(line)
 
-    return render_template('trend_analysis.html', array = array, lis = lis, get_file = get_file)
+        previous_content = get_contents(previous_version)
+        new_content = get_contents(new_version)
+
+        return render_template('trend_analysis.html', array = array, lis = lis, previous_content = previous_content, new_content = new_content)
+    else:
+        return render_template('trend_analysis.html', lis = lis)
+
 
 @app.route('/', methods=['GET', 'POST'])
 def index():

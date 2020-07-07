@@ -29,15 +29,17 @@ href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab
             <tbody>
                 {% for files in lis %}
                 <tr>
-                    <td>
+                    <td name = "pr_file" >
                         {{ files }}
                     </td>
                     <td>
-                        <form method="POST">
+                        <form method="POST" action="/trend_analysis" >
                             <input type="file" id="file" name="file" accept=".py">
+                            <input type="hidden" id="file2" name="file2" value= "{{ files }}" >
+
                             <button type="submit" class="btn btn-primary start">
                                 <i class="glyphicon glyphicon-upload"></i>
-                                <span>Start upload</span>
+                                <span>Compare Codes</span>
                             </button>
                         </form>
                     </td>
@@ -46,11 +48,39 @@ href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab
             </tbody>
         </table>
         
-            {% for data in array %}
-            <p>    {{data}} </p>
-            {% endfor %}
+        <div class="row">
+            <div class="col-sm-4" style="border: 1px solid;">
+                <h3>Previous Version</h3>
+                {% for val in previous_content %}
+                <p>
+                    {{val}}
+                </p>
+                {% endfor %}
+            </div>
 
-            {  }
+            <div class="col-sm-4" style="border: 1px solid;">
+                <h3>New Version</h3>
+                {% for val in new_content %}
+                <p>
+                    {{val}}
+                </p>
+                {% endfor %}
+            </div>
+
+            <div class="col-sm-4" style="border: 1px solid;">
+                <h3>Code Changes</h3>
+                {% for val in array %}
+                <p style="background-color: yellow;">
+                    {{val}}
+                </p>
+                {% endfor %}
+            </div>
+
+        </div>
+            
+
+           
+            
       </div>
 </div>
 
