@@ -118,19 +118,21 @@ def create_thumbnail(image):
         return False
 
 
-@app.route('/login', methods=['POST'])
+@app.route('/login', methods=['POST', 'GET'])
 def login():
-        
-    login_user = User.find_one({'name' : request.form['username']})
+    
+    if request.method == 'POST':
+        login_user = User.find_one({'name' : request.form['username']})
 
-    if login_user:
-        
-        if bcrypt.checkpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')):
+        if login_user:
+            
+            if bcrypt.checkpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')):
 
-            session['username'] = request.form['username']
-            return redirect(url_for('index'))
+                session['username'] = request.form['username']
+                return redirect(url_for('index'))
 
-    return 'Invalid username/password combination'
+    # return 'Invalid username/password combination'
+    return render_template('login.html')
 
 @app.route('/register', methods=['POST', 'GET'])
 def register():
@@ -142,9 +144,10 @@ def register():
             hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
             User.insert({'name' : request.form['username'], 'password' : hashpass.decode('utf-8')})
             session['username'] = request.form['username']
+            flash("Account created!")
             return redirect(url_for('index'))
         
-        return 'That username already exists!'
+        flash('That username already exists!')
 
     return render_template('register.html')
 
@@ -461,34 +464,39 @@ def google_pie_chart():
 
 @app.route('/hotspot', methods=['GET'])
 def hotspot_analysis():
+    
     return(render_template('hotspot_analysis.html'))
 
 
 @app.route('/dashboard', methods=['GET', 'POST'])
 def dashboard():
-    bar_labels = labels
-    bar_values = values
-    from Design_Smells import DesignSmells
-    obj = DesignSmells()
-     #1
-    lpl = obj.detect_LPL()
-    #2
-    lm = obj.detect_LM()
-    #3
-    lbcl = obj.detect_LBCL()
-    #4
-    lc = obj.large_class()
-    lc_len = len(lc)
-    #5 remaining
-    sak = obj.swiss_army_knife()
-    #6
-    data_class = obj.data_class()
-    total = len(lpl) + len(lm) + len(lbcl) + lc_len + len(sak) + len(data_class)
-    obj = getFile()
-    lis = obj.get_fileName()
-    codes = len(lis)
-    return render_template('dashboard.html', title='Lines of Codes Uploaded each Month', total = total, max=4800, labels=bar_labels, values=bar_values,
-    codes = codes)
+    if 'username' in session:
+
+        bar_labels = labels
+        bar_values = values
+        from Design_Smells import DesignSmells
+        obj = DesignSmells()
+        #1
+        lpl = obj.detect_LPL()
+        #2
+        lm = obj.detect_LM()
+        #3
+        lbcl = obj.detect_LBCL()
+        #4
+        lc = obj.large_class()
+        lc_len = len(lc)
+        #5 remaining
+        sak = obj.swiss_army_knife()
+        #6
+        data_class = obj.data_class()
+        total = len(lpl) + len(lm) + len(lbcl) + lc_len + len(sak) + len(data_class)
+        obj = getFile()
+        lis = obj.get_fileName()
+        codes = len(lis)
+        return render_template('dashboard.html', title='Lines of Codes Uploaded each Month', total = total, max=4800, labels=bar_labels, values=bar_values,
+        codes = codes)
+
+    return render_template('login.html')
 
 
 @app.route('/summary')
