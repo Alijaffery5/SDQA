@@ -144,7 +144,7 @@ def register():
             hashpass = bcrypt.hashpw(request.form['pass'].encode('utf-8'), bcrypt.gensalt())
             User.insert({'name' : request.form['username'], 'password' : hashpass.decode('utf-8')})
             session['username'] = request.form['username']
-            flash("Account created!")
+            flash("Account created!", 'primary')
             return redirect(url_for('index'))
         
         flash('That username already exists!')
@@ -458,6 +458,7 @@ def google_pie_chart():
     data = {'Task': 'Hours per Day', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
     'Long Base Class List(LBCL)': len(lbcl), 'Large Class(LC)': lc_len,
     'Swiss Army Knife' : len(sak), 'Data Class' : len(data_class)}
+    
     return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc, data_class=data_class, sak=sak, 
     total = total)
 

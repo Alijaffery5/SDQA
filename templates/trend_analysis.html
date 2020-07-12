@@ -1,19 +1,11 @@
 {% extends 'base.html' %}
-{% block title %}Trend Analysis{% endblock %}
 
 {% block head %}
-
-<!--     Fonts and icons     -->
-<link rel="stylesheet" type="text/css"
-href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab:400,700|Material+Icons" />
-<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/font-awesome/latest/css/font-awesome.min.css">
-
-<link rel="stylesheet" type="text/css" href="/static/assets/css/material-dashboard.css" />
-  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/js/bootstrap.min.js"></script> 
+{% block title %}Trend Analysis{% endblock %}
 {% endblock %}
 
 {% block content %}
+
 <div class="container">
     <h2>Trend Analysis for uploaded codes</h2>
     <div class="card-body table-responsive">
@@ -34,7 +26,7 @@ href="https://fonts.googleapis.com/css?family=Roboto:300,400,500,700|Roboto+Slab
                     </td>
                     <td>
                         <form method="POST" action="/trend_analysis" >
-                            <input type="file" id="file" name="file" accept=".py">
+                            <input type="file" id="file" name="file" accept=".py" required>
                             <input type="hidden" id="file2" name="file2" value= "{{ files }}" >
 
                             <button type="submit" class="btn btn-primary start">
