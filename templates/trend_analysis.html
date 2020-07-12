@@ -25,7 +25,7 @@
                         {{ files }}
                     </td>
                     <td>
-                        <form method="POST" action="/trend_analysis" >
+                        <form method="POST" action="/trend_analysis" enctype="multipart/form-data">
                             <input type="file" id="file" name="file" accept=".py" required>
                             <input type="hidden" id="file2" name="file2" value= "{{ files }}" >
 
@@ -67,8 +67,12 @@
                 </p>
                 {% endfor %}
             </div>
-
         </div>
+
+        <h2>Previous Smells</h2>
+        {{ previous_smells }}
+        <h2>New Smells</h2>
+        {{new_smells}}
             
       </div>
 </div>

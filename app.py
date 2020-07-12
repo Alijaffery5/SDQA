@@ -275,13 +275,51 @@ def trend_analysis():
 
     obj = getFile()
     lis = obj.get_fileName()
+    filename = ''
 
     if request.method == 'POST':
         previous = request.form.get('file2')
-        evolved_file = request.form['file']
+        evolved_file = request.files['file']
+
+        if evolved_file:
+            filename = secure_filename(evolved_file.filename)
+            filename = gen_file_name(filename)
+            mime_type = evolved_file.content_type
+
+            if not allowed_file(evolved_file.filename):
+                result = uploadfile(
+                    name=filename, type=mime_type, size=0, not_allowed_msg="File type not allowed")
+
+            else:
+                # save file to db
+                uploaded_file_path = os.path.join(
+                    app.config['UPLOAD_FOLDER'], filename)
+                evolved_file.save(uploaded_file_path)
+
+                data = {
+                    'User_id' : get_logged_id(),
+                    'Source_code_filename': filename,
+                    'Report_name': "Temp",
+                    'Date_name': datetime.today()
+                }
+                Code.insert_one(data)
+                # print(insertData.inserted_id)
+                flash('Python File Uploaded Successfully', 'success')
+
+                # create thumbnail after saving
+                if mime_type.startswith('text/plain'):
+                    create_thumbnail('py-logo.png')
+
+                # get file size after saving
+                size = os.path.getsize(uploaded_file_path)
+
+                # return json for js call back
+                result = uploadfile(name=filename, type=mime_type, size=size)
+
+            # return simplejson.dumps({"files": [result.get_file()]})
         
         previous_version = 'data/' + previous
-        new_version = 'data/'+ evolved_file
+        new_version = 'data/'+ filename
 
         with open(previous_version, 'r') as file1:
             with open(new_version, 'r') as file2:
@@ -294,8 +332,59 @@ def trend_analysis():
 
         previous_content = get_contents(previous_version)
         new_content = get_contents(new_version)
+        from Design_Smells_Specific_file import DesignSmells_2
+        obj = DesignSmells_2()
+        #1
+        lpl = obj.detect_LPL(filename)
+        #2
+        lm = obj.detect_LM(filename)
+        #3
+        lbcl = obj.detect_LBCL(filename)
+        #4
+        lc = obj.large_class(filename)
+        #5 remaining
+        sak = obj.swiss_army_knife(filename)
+        #6
+        data_class = obj.data_class(filename)
+        
+        new_smells = len(lpl) + len(lm) + len(lbcl) + len(lc) + len(sak) + len(data_class)
 
-        return render_template('trend_analysis.html', array = array, lis = lis, previous_content = previous_content, new_content = new_content)
+        #1
+        lpl = obj.detect_LPL(previous)
+        #2
+        lm = obj.detect_LM(previous)
+        #3
+        lbcl = obj.detect_LBCL(previous)
+        #4
+        lc = obj.large_class(previous)
+        #5 remaining
+        sak = obj.swiss_army_knife(previous)
+        #6
+        data_class = obj.data_class(previous)
+        
+        previous_smells = len(lpl) + len(lm) + len(lbcl) + len(lc) + len(sak) + len(data_class)
+
+        from Design_Smells import DesignSmells
+        obj = DesignSmells()
+
+        #1
+        lpl = obj.detect_LPL()
+        #2
+        lm = obj.detect_LM()
+        #3
+        lbcl = obj.detect_LBCL()
+        #4
+        lc = obj.large_class()
+        lc_len = len(lc)
+        #5 remaining
+        sak = obj.swiss_army_knife()
+        #6
+        data_class = obj.data_class()
+
+        files_smells = get_individual_files_smells(lpl,lm,lbcl,lc,sak,data_class)
+    
+        return render_template('trend_analysis.html', array = array, lis = lis, previous_content = previous_content, new_content = new_content,
+        files_smells=files_smells, new_smells = new_smells, previous_smells = previous_smells )
     else:
         return render_template('trend_analysis.html', lis = lis)
 
@@ -458,9 +547,59 @@ def google_pie_chart():
     data = {'Task': 'Hours per Day', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
     'Long Base Class List(LBCL)': len(lbcl), 'Large Class(LC)': lc_len,
     'Swiss Army Knife' : len(sak), 'Data Class' : len(data_class)}
-    
+
+    files_smells = get_individual_files_smells(lpl,lm,lbcl,lc,sak,data_class)
+
     return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc, data_class=data_class, sak=sak, 
-    total = total)
+    total = total, files_smells = files_smells)
+
+
+def get_individual_files_smells(lpl,lm,lbcl,lc,sak,data_class):
+
+    obj = getFile()
+    lis = obj.get_fileName()
+    dict2 = {}
+    counter = 0
+        
+    for keys, values in lpl.items():
+        gen = (x for x in lis if x == keys)
+        for x in gen:
+            dict2[x] = counter+1
+            # print(values['class_name'])
+
+    for keys, values in lm.items():
+        gen = (x for x in lis if x == keys)
+        for x in gen:
+            dict2[x] +=1
+            # print(values['class_name'])
+
+    for keys, values in lbcl.items():
+        gen = (x for x in lis if x == keys)
+        for x in gen:
+            dict2[x] +=1
+            # print(values['class_name'])
+
+    for keys, values in lc.items():
+        gen = (x for x in lis if x == keys)
+        for x in gen:
+            dict2[x] +=1
+            # print(values['class_name'])
+
+    for keys, values in sak.items():
+        gen = (x for x in lis if x == keys)
+        for x in gen:
+            dict2[x] +=1
+            # print(values['class_name'])
+
+
+    for keys, values in data_class.items():
+        gen = (x for x in lis if x == keys)
+        for x in gen:
+            dict2[x] +=1
+            # print(values['class_name'])
+
+
+    return dict2
 
 
 @app.route('/hotspot', methods=['GET'])
