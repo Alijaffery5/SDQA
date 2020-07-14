@@ -30,7 +30,7 @@ feedfinder2==0.0.4
 feedparser==5.2.1
 flake8==3.7.9
 flake8-polyfill==1.0.2
-Flask==1.0.0
+Flask==1.1.1
 flask-appconfig==0.11.1
 Flask-Babel==1.0.0
 Flask-Bcrypt==0.7.1
@@ -44,6 +44,7 @@ Flask-PyMongo==2.3.0
 Flask-ReCaptcha==0.4.2
 Flask-SQLAlchemy==2.4.1
 Flask-WTF==0.14.3
+nltk==3.5
 fpdf==1.7.2
 future==0.18.2
 gensim==3.8.1
