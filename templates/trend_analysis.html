@@ -8,26 +8,39 @@
 
 <div class="container">
     <h2>Trend Analysis for uploaded codes</h2>
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" id="success-alert">
+        <span>{{ message }}</span>
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+    </div>
+    {% endfor %}
+    {% endif %}
+    {% endwith %}
+
     <div class="card-body table-responsive">
         <table class="table table-hover">
 
-         <thead>
-             <th>
-                Previous Version
-             </th>
+            <thead>
+                <th>
+                    Previous Version
+                </th>
 
-             <th> Upload evolved Version </th>
+                <th> Upload evolved Version </th>
             </thead>
             <tbody>
                 {% for files in lis %}
                 <tr>
-                    <td name = "pr_file" >
+                    <td name="pr_file">
                         {{ files }}
                     </td>
                     <td>
                         <form method="POST" action="/trend_analysis" enctype="multipart/form-data">
                             <input type="file" id="file" name="file" accept=".py" required>
-                            <input type="hidden" id="file2" name="file2" value= "{{ files }}" >
+                            <input type="hidden" id="file2" name="file2" value="{{ files }}">
 
                             <button type="submit" class="btn btn-primary start">
                                 <i class="glyphicon glyphicon-upload"></i>
@@ -39,7 +52,7 @@
                 {% endfor %}
             </tbody>
         </table>
-        
+
         <div class="row">
             <div class="col-sm-4" style="border: 1px solid;">
                 <h3>Previous Version</h3>
@@ -68,13 +81,22 @@
                 {% endfor %}
             </div>
         </div>
+        <div id="result_div">
 
-        <h2>Previous Smells</h2>
-        {{ previous_smells }}
-        <h2>New Smells</h2>
-        {{new_smells}}
-            
-      </div>
+            <h3>Smells in Previous Version i.e {{previous}} </h3>
+            {{ previous_smells }}
+            <h3>Smells in New Version i.e {{filename}} </h3>
+            {{new_smells}}
+        </div>
+
+    </div>
+
 </div>
+<script>
+
+$("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+    $("#success-alert").slideUp(500);
+});
+</script>
 
 {% endblock %}

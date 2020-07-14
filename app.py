@@ -147,7 +147,7 @@ def register():
             flash("Account created!", 'primary')
             return redirect(url_for('index'))
         
-        flash('That username already exists!')
+        flash('That username already exists!', 'warning')
 
     return render_template('register.html')
 
@@ -304,7 +304,7 @@ def trend_analysis():
                 }
                 Code.insert_one(data)
                 # print(insertData.inserted_id)
-                flash('Python File Uploaded Successfully', 'success')
+                flash('New Version Upload Successfully!', 'success')
 
                 # create thumbnail after saving
                 if mime_type.startswith('text/plain'):
@@ -382,9 +382,10 @@ def trend_analysis():
         data_class = obj.data_class()
 
         files_smells = get_individual_files_smells(lpl,lm,lbcl,lc,sak,data_class)
+        print(files_smells)
     
         return render_template('trend_analysis.html', array = array, lis = lis, previous_content = previous_content, new_content = new_content,
-        files_smells=files_smells, new_smells = new_smells, previous_smells = previous_smells )
+        files_smells=files_smells, new_smells = new_smells, previous_smells = previous_smells, previous=previous, filename = filename )
     else:
         return render_template('trend_analysis.html', lis = lis)
 
@@ -560,43 +561,73 @@ def get_individual_files_smells(lpl,lm,lbcl,lc,sak,data_class):
     lis = obj.get_fileName()
     dict2 = {}
     counter = 0
-        
     for keys, values in lpl.items():
+        
         gen = (x for x in lis if x == keys)
         for x in gen:
-            dict2[x] = counter+1
-            # print(values['class_name'])
+            # dict2[x] = counter+1
+            dict2 [x] = {
+                'smell_name' : 'LPL',
+                'class_name' : values['class_name'],
+                'value' : counter+1,
+            }
 
     for keys, values in lm.items():
         gen = (x for x in lis if x == keys)
         for x in gen:
-            dict2[x] +=1
-            # print(values['class_name'])
+            dict2 [x] = {
+                'smell_name' : 'LM',
+                'class_name' : values['class_name'],
+                'value' : counter+1,
+            }
+            
 
     for keys, values in lbcl.items():
         gen = (x for x in lis if x == keys)
         for x in gen:
-            dict2[x] +=1
-            # print(values['class_name'])
+            dict2 [x] = {
+                'smell_name' : 'LBCL',
+                # 'class_name' : values['class_name'],
+                'value' : counter,
+            }
+            for x,y in dict2.items():
+                y['value'] +=1
 
     for keys, values in lc.items():
         gen = (x for x in lis if x == keys)
         for x in gen:
-            dict2[x] +=1
-            # print(values['class_name'])
+            dict2 [x] = {
+                'smell_name' : 'LC',
+                'class_name' : values['class_name'],
+                'value' : counter,
+            }
+            for x,y in dict2.items():
+                y['value'] +=1
 
     for keys, values in sak.items():
         gen = (x for x in lis if x == keys)
         for x in gen:
-            dict2[x] +=1
-            # print(values['class_name'])
+            dict2 [x] = {
+                'smell_name' : 'SAK',
+                'class_name' : values['class_name'],
+                'value' : counter,
+            }
+
+            for x,y in dict2.items():
+                y['value'] +=1
 
 
     for keys, values in data_class.items():
         gen = (x for x in lis if x == keys)
         for x in gen:
-            dict2[x] +=1
-            # print(values['class_name'])
+            dict2 [x] = {
+                'smell_name' : 'Data Class',
+                'class_name' : values['class_name'],
+               'value' : counter,
+            }
+
+            for x,y in dict2.items():
+                y['value'] +=1
 
 
     return dict2

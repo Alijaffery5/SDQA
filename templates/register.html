@@ -5,18 +5,18 @@
     style="background-image: url(/static/assets/img/background.jpg); background-position: center; background-repeat: no-repeat; background-size: cover;">
     <div class="row">
         <div class="container">
-            {% with messages = get_flashed_messages() %}
+            {% with messages = get_flashed_messages(with_categories=true) %}
             {% if messages %}
-                {% for message in messages %}
-                    <div class="alert alert-primary alert-dismissible fade show" role="alert">
-                        <span style="color: greenyellow;">already user</span>
-                        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
-                        <span aria-hidden="true">&times;</span>
-                        </button>
-                    </div>
-                {% endfor %}
+            {% for category, message in messages %}
+            <div class="alert alert-{{ category }} alert-dismissible fade show" role="alert" id="success-alert">
+                <span>{{ message }}</span>
+                <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            {% endfor %}
             {% endif %}
-        {% endwith %}
+            {% endwith %}
         
             <div class="intro-text">
                 <div class="intro-heading" style="color: white;">Create New Account!</div>
