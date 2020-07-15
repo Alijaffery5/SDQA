@@ -14,15 +14,16 @@ import re
 import pprint
 import json
 from subprocess import Popen, PIPE, STDOUT
-from radon.visitors import ComplexityVisitor
 from astroid import parse
 from Parser import parseCode
-from radon.complexity import cc_rank, cc_visit
 from datetime import datetime
 from bson import ObjectId
 import pdfkit
 import bcrypt
 
+#Object for Metrics class
+from metrics import Metrics_defined
+metrics_obj = Metrics_defined()
 
 app = Flask(__name__)
 
@@ -406,6 +407,7 @@ def uploadFile():
 
 @app.route('/metrics', methods=['GET', 'POST'])
 def metrics():
+    
     if request.method == 'POST':
         selected_option = request.form['options']
         lis = obj.get_fileName()
@@ -422,16 +424,16 @@ def metrics():
                 # }
                 #     for klass, lcom in analysis.items():
                 #         temp.append(f"{klass}: {lcom}")
-                temp.append(lcom4(item))
+                temp.append(metrics_obj.lcom4(item))
 
-                return render_template("metrics.html", lcom=lcom4(item), threshold=compare_LCOM(item), filename=item, selected_option=selected_option)
+                return render_template("metrics.html", lcom=metrics_obj.lcom4(item), threshold=compare_LCOM(item), filename=item, selected_option=selected_option)
         elif selected_option == "Number of Methods":
             dict = {}
             array_nom = []
             t = []
             for item in lis:
-                array_nom.append(Number_of_methods(item))
-                dict[item] = Number_of_methods(item)
+                array_nom.append(metrics_obj.Number_of_methods(item))
+                dict[item] = metrics_obj.Number_of_methods(item)
                 t.append(compare_NOM(item))
             labels = lis
             values = array_nom
@@ -442,8 +444,8 @@ def metrics():
             array_nom = []
             t = []
             for item in lis:
-                array_nom.append(Number_of_public_methods(item))
-                dict[item] = Number_of_public_methods(item)
+                array_nom.append(metrics_obj.Number_of_public_methods(item))
+                dict[item] = metrics_obj.Number_of_public_methods(item)
                 t.append(compare_NOM(item))
             labels = lis
             values = array_nom
@@ -455,8 +457,8 @@ def metrics():
             cn = []
             cn2 = []
             for item in lis:
-                array_nom.append(Number_of_parameters(item))
-                dict[item] = Number_of_parameters(item)
+                array_nom.append(metrics_obj.Number_of_parameters(item))
+                dict[item] = metrics_obj.Number_of_parameters(item)
                 cn.append(compare_NOP(item))
             for x in cn:
                 for y in x:
@@ -471,9 +473,9 @@ def metrics():
             array_nof = []
             t = []
             for item in lis:
-                array_nof.append(Number_of_fields(item))
+                array_nof.append(metrics_obj.Number_of_fields(item))
             for item in lis:
-                dict[item] = Number_of_fields(item)
+                dict[item] = metrics_obj.Number_of_fields(item)
                 t.append(compare_NOF(item))
             labels = lis
             values = array_nof
@@ -485,8 +487,8 @@ def metrics():
             array_loc_val = []
             dict = {}
             for item in lis:
-                array_loc_val.append(get_LOC(item))
-                dict[item] = LOC_metrics(item)
+                array_loc_val.append(metrics_obj.get_LOC(item))
+                dict[item] = metrics_obj.LOC_metrics(item)
 
             labels = lis
             values = array_loc_val
@@ -498,24 +500,24 @@ def metrics():
             dict = {}
             array_val = []
             for item in lis:
-                array_val.append(cyclomatic_complexity(item))
-                dict[item] = cyclomatic_complexity(item)
+                array_val.append(metrics_obj.cyclomatic_complexity(item))
+                dict[item] = metrics_obj.cyclomatic_complexity(item)
             labels = lis
             values = array_val
             return render_template("metrics.html", cc_value2=dict, threshold=compare_CC(item), selected_option=selected_option, title='CC Metric Threshold', max=10, labels=labels, values=values)
 
         elif selected_option == "WMC":
             for item in lis:
-                return render_template("metrics.html", filename=item,  wmc=get_WMC(item), threshold=compare_WMC(item), selected_option=selected_option)
+                return render_template("metrics.html", filename=item,  wmc= metrics_obj.get_WMC(item), threshold=compare_WMC(item), selected_option=selected_option)
         
         elif selected_option == "Number of Accessors":
             for item in lis:
-                return render_template("metrics.html", filename=item,  NOA = Metrics_defined().Number_of_accessors(item), selected_option=selected_option)
+                return render_template("metrics.html", filename=item,  NOA = metrics_obj.Number_of_accessors(item), selected_option=selected_option)
 
         elif selected_option == "Methods-LOC":
             
             for item in lis:
-                return render_template("metrics.html", filename=item, threshold = compare_NOM_LOC(item), NOML = Metrics_defined().get_NOML(item), selected_option=selected_option)
+                return render_template("metrics.html", filename=item, threshold = compare_NOM_LOC(item), NOML = metrics_obj.get_NOML(item), selected_option=selected_option)
 
         else:
             return render_template("metrics.html", selected_option=selected_option)
@@ -679,19 +681,19 @@ def summary():
     dict2 = {}
     for files in lis:
         files_array.append(files)
-        dict[files] = get_LOC(files)
-        dict2[files] = get_SLOC(files)
+        dict[files] = metrics_obj.get_LOC(files)
+        dict2[files] = metrics_obj.get_SLOC(files)
 
     labels = [
         'LOC', 'SLOC', 'NOM', 'NOPM',
         'NOF'
     ]
     list2 = []
-    list2.append(get_LOC(files))
-    list2.append(get_SLOC(files))
-    list2.append(Number_of_methods(files))
-    list2.append(Number_of_public_methods(files))
-    list2.append(Number_of_fields(files))
+    list2.append(metrics_obj.get_LOC(files))
+    list2.append(metrics_obj.get_SLOC(files))
+    list2.append(metrics_obj.Number_of_methods(files))
+    list2.append(metrics_obj.Number_of_public_methods(files))
+    list2.append(metrics_obj.Number_of_fields(files))
     values = list2
 
     return render_template('summary.html', files=files_array, loc=dict, sloc=dict2, klass=obj.get_classes(), title='Bar-Chart Analysis', max=200, labels=labels, values=values)
@@ -731,122 +733,8 @@ colors = [
     "#C71585", "#FF4500", "#FEDCBA", "#46BFBD"]
 
 
-def lcom4(file):
-    cmd = os.popen("lcom data/"+file).read().split('\n')
-    return cmd
-
-
-def cyclomatic_complexity(file):
-    cmd = os.popen("radon cc data/"+file + " -s").read().split('\n')
-    return cmd
-
-
-def LOC_metrics(file):
-    cmd = os.popen("radon raw data/"+file).read().split('\n')
-    cmd.pop(0)
-    cmd.pop()
-    return cmd
-
-
-def Number_of_public_methods(file):
-    counter = 0
-    with open("data/"+file, "r") as file:
-
-        for line in file:
-            arr = line.split()
-            if len(arr) < 2:
-                continue
-            if arr[0] == 'def':
-                if arr[1][:2] != '__':
-                    counter += 1
-
-    return counter
-
-
-def Number_of_methods(file):
-    counter = 0
-    with open("data/"+file, "r") as file:
-        for line in file:
-            for word in line.split():
-                if word == "def" or word == "def __":
-                    counter += 1
-
-    return counter
-
-
-def Number_of_parameters(file):
-    counter = 0
-    dic = {}
-    with open("data/"+file, "r") as file:
-
-        for line in file:
-            arr = line.split()
-            if len(arr) < 2:
-                continue
-            if arr[0] == 'def':
-
-                args = ""
-                flag = False
-                for char in line:
-                    if char == ')':
-                        flag = False
-                    if char == '(':
-                        flag = True
-                    if flag:
-                        args += char
-
-                args_arr = args.split(',')
-                counter = len(args_arr)
-                dic[line] = counter
-
-    return dic
-
-
-def Number_of_fields(file):
-    counter = 0
-    with open("data/"+file, "r") as file:
-
-        flag = False
-
-        for line in file:
-            arr = line.split()
-            if len(arr) < 2:
-                continue
-
-            if arr[1].find('__init__') != -1:
-                flag = True
-                continue
-
-            if flag:
-                if line.find("self.") != -1:
-                    counter += 1
-
-                else:
-                    flag = False
-
-    return counter
-
-
-def get_WMC(file):
-    dict = {"Phone": 5, "Mobile Phone": 8, "Iphone": 3, "Ïphone6": 2,
-            "Iphone7": 2, "Samsung": 3, "SamsungGalaxyS8": 2}
-    return dict
-
-
-def get_LOC(file):
-    method = LOC_metrics(file)
-    LOC = method[1].split(":")
-    return int(LOC[1])
-
-
-def get_SLOC(file):
-    method = LOC_metrics(file)
-    SLOC = method[2].split(":")
-    return int(SLOC[1])
-
-
 def get_CC(file):
-    method = cyclomatic_complexity(file)
+    method = metrics_obj.cyclomatic_complexity(file)
     i = 1
     list = []
     while i < len(method) - 1:
@@ -859,29 +747,29 @@ def get_CC(file):
 
 def compare_NOM(file):
     temp = []
-    if Number_of_methods(file) <= 6:
+    if metrics_obj.Number_of_methods(file) <= 6:
         temp.append("Lies within Normal Threshold")
-    elif 6 < Number_of_methods(file) <= 14:
+    elif 6 < metrics_obj.Number_of_methods(file) <= 14:
         temp.append("Casual/Quuite above threshold")
-    elif Number_of_methods(file) > 14:
+    elif metrics_obj.Number_of_methods(file) > 14:
         temp.append("Violation")
     return temp
 
 
 def compare_NOF(file):
     temp = []
-    if Number_of_fields(file) <= 3:
+    if metrics_obj.Number_of_fields(file) <= 3:
         temp.append("Lies within Normal Threshold")
-    elif 3 < Number_of_fields(file) <= 8:
+    elif 3 < metrics_obj.Number_of_fields(file) <= 8:
         temp.append("Casual/Quuite above threshold")
-    elif Number_of_fields(file) > 8:
+    elif metrics_obj.Number_of_fields(file) > 8:
         temp.append("Violation")
     return temp
 
 
 def get_lcom4(file):
     list = []
-    for x in lcom4(file):
+    for x in metrics_obj.lcom4(file):
         if (x != '' and x != '+-----------------------------+------+' and x != 'Calculating LCOM using LCOM4'):
             n = 2
             i = (re.findall("|".join(["[^|]+"]*n), x))
@@ -916,7 +804,7 @@ def compare_CC(file):
 
 def compare_WMC(file):
 
-    for x, y in get_WMC(file).items():
+    for x, y in metrics_obj.get_WMC(file).items():
         if y <= 11:
             return x, "Good/Common"
         elif 11 < y <= 34:
@@ -928,7 +816,7 @@ def compare_WMC(file):
 def compare_NOP(file):
 
     temp = []
-    for x, y in Number_of_parameters(file).items():
+    for x, y in metrics_obj.Number_of_parameters_(file).items():
 
         if y <= 2:
             temp.append("Good/Common")
@@ -941,7 +829,7 @@ def compare_NOP(file):
 def compare_NOM_LOC(file):
 
     temp = []
-    for x,val in Metrics_defined().get_NOML(file).items():
+    for x,val in metrics_obj.get_NOML(file).items():
         val = len(val)
         if val <= 10:
             temp.append("Good/Common")
@@ -950,322 +838,6 @@ def compare_NOM_LOC(file):
         elif val > 32:
             temp.append("Violation/Bad")
     return temp
-
-
-class Metrics_defined:
-
-    def get_NOML(self, file):
-        with open("data/"+file, "r") as file:
-            def space_ccount(line): return len(line)-len(line.lstrip(' '))
-            methods = {}
-            class_ = ''
-            line_num = 0
-            list = []
-            def_start = False
-
-            for line in file:
-                line_num += 1
-
-                #get current class
-                if 'class ' in line:
-                    class_ = line.split('class')[1][1:-2].strip()
-
-                # get method bodies
-                tab = 0
-                if 'def' in line:
-                    new_line = line_num
-                    tab = space_ccount(line)
-                    def_start = True
-                    method_name = line.split('(')[0].split('def')[1][1:]
-                    list = []
-        
-                elif def_start and space_ccount(line) >= tab+4:
-                    
-                    list.append(line.strip(' '))
-
-                    methods[method_name] = {
-                    'body': list,
-                    'line': str(new_line),
-                    'class_':  class_
-                    }
-
-                else:
-                    def_start = False
-        return methods
-
-    def find_parent(self, c, file):
-        
-        cleanpath = os.path.abspath("data/"+file)
-        datafile = open(cleanpath, 'r')
-
-        imports = []
-        classes = []
-
-        for line in datafile:
-            if 'import' in line:
-                for x in line.split('import')[1].split(','):
-                    imports.append(x.strip())
-
-            if 'class ' in line:
-                classes.append(line.split('class')[1][1:-2].strip())
-        if '(' not in c:
-            return ''
-
-        s = c[c.find("(")+1:c.find(")")].split(',')
-        s = s[0]
-        parent = ''
-        flag = True
-        for x in imports:
-            if s == x:
-                parent = x
-                flag = False
-                break
-        if flag:
-            for x in classes:
-                if s in x:
-                    parent = x
-                    break
-        return s + ' ' + Metrics_defined().find_parent(parent, file)
-
-
-    def get_aid(self, file):
-        with open("data/"+file, "r") as file:
-            class_ = ''
-            imports = []
-            dict = {}
-            flag = False
-            counter = 0
-
-            for line in file:
-
-                if 'import' in line:
-                    for x in line.split('import')[1].split(','):
-                        imports.append(x.strip())
-
-                if 'class ' in line:
-                    class_ = line.split('class')[1][1:-2].strip()
-
-
-                if line.find('__init__') != -1:
-                    flag = True
-                    continue
-
-                if flag:
-                    if line.find("self.") != -1:
-                        word = line.split()
-                        for x in imports:
-                            for y in word:
-                                if y.find(x) != -1:
-                                    counter += 1
-                                    dict[class_] = {
-                                    'AID': counter
-                                    }
-
-                else:
-                    flag = False                
-
-        return dict
-
-    def get_ald(self, file):
-        with open("data/"+file, "r") as file:
-            class_ = ''
-            imports = []
-            dict = {}
-            flag = False
-            counter = 0
-
-            for line in file:
-
-                if 'import' in line:
-                    for x in line.split('import')[1].split(','):
-                        imports.append(x.strip())
-
-                if 'class ' in line:
-                    class_ = line.split('class')[1][1:-2].strip()
-
-
-                if line.find('__init__') != -1:
-                    flag = True
-                    continue
-
-                elif flag:
-                    if line.find("self.") != -1:
-                        word = line.split()
-                        # for x in word:
-                            # print(x)
-                        
-                        for y in word:
-                            for x in imports:
-                                print(y)
-                                if y != x:
-                                    counter += 1
-                                    dict[class_] = {
-                                    'AID': counter
-                                    }
-                            else:
-                                counter = 0
-                    else:
-                        flag = False
-
-        return dict
-
-
-    def dit_list(self, c, file):
-        array = []
-        whole_array = Metrics_defined().find_parent(c, file)
-        for i in whole_array.split(' '):
-            array.append(i)
-        return ' '.join(array).split()
-
-
-    def Number_of_parameters(self, file):
-        counter = 0
-        line_num = 0
-        main_dict = {}
-        class_ = ''
-        with open("data/"+file, "r") as file:
-
-            for line in file:
-                
-                line_num += 1
-                if 'class ' in line:
-                    class_ = line.split('class')[1][1:-2].strip()
-                arr = line.split()
-                if len(arr) < 2:
-                    continue
-                if arr[0] == 'def':
-                    
-                    new_line = line_num
-                    method_name = line.split('(')[0].split('def')[1][1:]
-                    args = ""
-                    flag = False
-                    for char in line:
-                        if char == ')':
-                            flag = False
-                        if char == '(':
-                            flag = True
-                        if flag:
-                            args += char
-                        else:
-                            args_arr = args.split(',')
-                            counter = len(args_arr)
-                            main_dict[method_name] = {
-                            'parameters': counter,
-                            'line': str(new_line),
-                            'class_':  class_
-                            }
-
-        return main_dict
-
-    def Number_of_SUP (self, file):
-        counter = 0
-        line_num = 0
-        main_dict = {}
-        class_ = ''
-        with open("data/"+file, "r") as file:
-
-            for line in file:
-                
-                line_num += 1
-                if 'class ' in line:
-                    new_line = line_num
-                    class_ = line.split('class')[1][1:-2].strip()
-                    args = ""
-                    flag = False
-                    for char in line:
-                        if char == ')':
-                            flag = False
-                        if char == '(':
-                            flag = True
-                        if flag:
-                            args += char
-                        else:
-                            args_arr = args.split(',')
-                            counter = len(args_arr)
-                            main_dict[class_] = {
-                            'SUP': counter,
-                            'line_number': str(new_line),
-                            }
-
-        return main_dict
-
-
-    def Number_of_accessors(self,file):
-        counter = 0
-        dic = {}
-        with open("data/"+file, "r") as file:
-            
-            class_name = ''
-            previous_name = ''
-            for line in file:
-                if 'class ' in line:
-                    previous_name = class_name
-                    dic[previous_name] = counter
-                    class_name = line.split('class')[1][1:-2].strip()
-                    counter = 0
-                if 'def ' in line:
-                    method_name = line.split('def')[1][1:-2].strip()
-                    if method_name[0:4] == 'get_':
-                        counter += 1
-
-        if '' in dic:
-            del dic['']
-
-        return dic
-
-    def get_LOC_class(self,file):
-
-        counter = 0
-        main_dic = {}
-        class_ = ''
-        line_num = 0
-        new_line = ''
-        
-        with open("data/"+file, "r") as file:
-            
-            for line in file:
-                line_num += 1
-                if 'class ' in line:
-                    new_line = line_num
-                    class_ = line.split('class')[1][1:-2].strip()
-                    counter = 0
-
-                elif not line.strip():
-                    continue
-                else:
-                    counter += 1
-                    main_dic[class_] = {
-                        'line_number': str(new_line),
-                        'value':  counter
-                    }
-
-        if '' in main_dic:
-            del main_dic['']
-
-        return main_dic
-
-
-    def get_AID(self,file):
-        counter = 0
-        dic = {}
-        with open("data/"+file, "r") as file:
-            
-            class_name = ''
-            previous_name = ''
-            for line in file:
-                if 'class ' in line:
-                    previous_name = class_name
-                    dic[previous_name] = counter
-                    class_name = line.split('class')[1][1:-2].strip()
-                    counter = 0
-                for word in line.split():
-                    if isinstance(word, type(class_name)):
-                        counter += 1
-
-        if '' in dic:
-            del dic['']
-
-        return dic
 
 
 if __name__ == '__main__':
