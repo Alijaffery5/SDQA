@@ -190,7 +190,12 @@ class Metrics_defined:
             class_ = ''
             imports = []
             dict = {}
-            flag = False
+            def space_ccount(line): return len(line)-len(line.lstrip(' '))
+            class_ = ''
+            line_num = 0
+            temp = {}
+            kool = ''
+            def_start = False
             counter = 0
 
             for line in file:
@@ -201,70 +206,90 @@ class Metrics_defined:
 
                 if 'class ' in line:
                     class_ = line.split('class')[1][1:-2].strip()
-
-
-                if line.find('__init__') != -1:
-                    flag = True
-                    continue
-
-                if flag:
+                
+                tab = 0
+                if 'def' in line:
+                    new_line = line_num
+                    tab = space_ccount(line)
+                    def_start = True
+                    method_name = line.split('(')[0].split('def')[1][1:]
+                    # counter = 0
+        
+                elif def_start and space_ccount(line) >= tab+4:
+                    
+                    
                     if line.find("self.") != -1:
                         word = line.split()
                         for x in imports:
                             for y in word:
                                 if y.find(x) != -1:
                                     counter += 1
+                                    temp[method_name] = method_name
+                                    kool += method_name
                                     dict[class_] = {
+                                    'method_name' : temp[method_name],
                                     'AID': counter
                                     }
+                    else:
+                        counter = 0
 
                 else:
-                    flag = False                
+                    def_start = False
 
         return dict
 
-    def get_ald(self, file):
-        with open("data/"+file, "r") as file:
-            class_ = ''
-            imports = []
-            dict = {}
-            flag = False
-            counter = 0
 
-            for line in file:
+    def testing(self, file):
+            with open("data/"+file, "r") as file:
+                class_ = ''
+                imports = []
+                dict = {}
+                def space_ccount(line): return len(line)-len(line.lstrip(' '))
+                class_ = ''
+                line_num = 0
+                temp = {}
+                kool = ''
+                def_start = False
+                counter = 0
 
-                if 'import' in line:
-                    for x in line.split('import')[1].split(','):
-                        imports.append(x.strip())
+                for line in file:
 
-                if 'class ' in line:
-                    class_ = line.split('class')[1][1:-2].strip()
+                    if 'import' in line:
+                        for x in line.split('import')[1].split(','):
+                            imports.append(x.strip())
 
-
-                if line.find('__init__') != -1:
-                    flag = True
-                    continue
-
-                elif flag:
-                    if line.find("self.") != -1:
-                        word = line.split()
-                        # for x in word:
-                            # print(x)
+                    if 'class ' in line:
+                        class_ = line.split('class')[1][1:-2].strip()
+                    
+                    tab = 0
+                    if 'def' in line:
+                        new_line = line_num
+                        tab = space_ccount(line)
+                        def_start = True
+                        method_name = line.split('(')[0].split('def')[1][1:]
+                        # counter = 0
+            
+                    elif def_start and space_ccount(line) >= tab+4:
                         
-                        for y in word:
+                        
+                        if line.find("self.") != -1:
+                            word = line.split()
                             for x in imports:
-                                print(y)
-                                if y != x:
-                                    counter += 1
-                                    dict[class_] = {
-                                    'AID': counter
-                                    }
+                                for y in word:
+                                    if not y.find(x) != -1:
+                                        counter += 1
+                                        temp[method_name] = method_name
+                                        dict[class_] = {
+                                        'method_name' : temp[method_name],
+                                        'AID': counter
+                                        }
                             else:
                                 counter = 0
-                    else:
-                        flag = False
 
-        return dict
+                    else:
+                        def_start = False
+
+            return dict
 
 
     def dit_list(self, c, file):
@@ -401,25 +426,6 @@ class Metrics_defined:
 
         return main_dic
 
-
-    def get_AID(self,file):
-        counter = 0
-        dic = {}
-        with open("data/"+file, "r") as file:
-            
-            class_name = ''
-            previous_name = ''
-            for line in file:
-                if 'class ' in line:
-                    previous_name = class_name
-                    dic[previous_name] = counter
-                    class_name = line.split('class')[1][1:-2].strip()
-                    counter = 0
-                for word in line.split():
-                    if isinstance(word, type(class_name)):
-                        counter += 1
-
-        if '' in dic:
-            del dic['']
-
-        return dic
+    def calculate_local_variables(self,method):
+        var =  method
+        return var.__code__.co_nlocals

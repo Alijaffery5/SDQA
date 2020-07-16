@@ -20,6 +20,7 @@ from datetime import datetime
 from bson import ObjectId
 import pdfkit
 import bcrypt
+import difflib
 
 #Object for Metrics class
 from metrics import Metrics_defined
@@ -271,6 +272,33 @@ def get_contents(filename):
         content = content.split('\n')
         return content
 
+def make_diff(old, new):
+    """
+    Render in HTML the diff between two texts
+    """
+    df = difflib.HtmlDiff()
+    old_lines = old.splitlines(1)
+    new_lines = new.splitlines(1)
+    html = df.make_table(old_lines, new_lines, context=True)
+    html = html.replace(' nowrap="nowrap"','')
+    return html
+
+def files_comparison(fromfile, tofile):
+        try:
+            fromlines = open(fromfile, 'U').readlines()
+            tolines = open(tofile, 'U').readlines()
+            diff = difflib.HtmlDiff().make_file(fromlines,tolines,fromfile,tofile)
+            path = os.path.basename(fromfile) + '_' + os.path.basename(tofile) + '_diff.html'
+            f = open(path,'w')
+            f.write(diff)
+            f.close()
+            return path
+            #import webbrowser
+            #webbrowser.open_new_tab(path)
+        except Exception as e:
+            # self.logger.error("failed to diff files %s, %s: %s", fromfile, tofile, str(e))
+            return None 
+
 @app.route('/trend_analysis', methods=['GET', 'POST'])
 def trend_analysis():
 
@@ -330,6 +358,9 @@ def trend_analysis():
         array = []
         for line in same:
             array.append(line)
+        
+        files_comparison(previous_version, new_version)
+        flash('Comparison Report Generated Successfully!!', 'success')
 
         previous_content = get_contents(previous_version)
         new_content = get_contents(new_version)
@@ -386,7 +417,8 @@ def trend_analysis():
         print(files_smells)
     
         return render_template('trend_analysis.html', array = array, lis = lis, previous_content = previous_content, new_content = new_content,
-        files_smells=files_smells, new_smells = new_smells, previous_smells = previous_smells, previous=previous, filename = filename )
+        files_smells=files_smells, new_smells = new_smells, previous_smells = previous_smells, previous=previous, filename = filename,
+        diff = diff )
     else:
         return render_template('trend_analysis.html', lis = lis)
 
@@ -415,15 +447,6 @@ def metrics():
         if selected_option == "LCOM":
             temp = []
             for item in lis:
-                # f = open ("data/"+item,"r")
-                # ast = parse(f.read())
-                # test = parseCode()
-                # analysis = {
-                #     klass: test.analyze(definition)
-                #     for klass, definition in test.find_classes(ast).items()
-                # }
-                #     for klass, lcom in analysis.items():
-                #         temp.append(f"{klass}: {lcom}")
                 temp.append(metrics_obj.lcom4(item))
 
                 return render_template("metrics.html", lcom=metrics_obj.lcom4(item), threshold=compare_LCOM(item), filename=item, selected_option=selected_option)
@@ -523,6 +546,7 @@ def metrics():
             return render_template("metrics.html", selected_option=selected_option)
 
     else:
+        print(metrics_obj.testing("phones.py"))
         return render_template("metrics.html")
 
 @app.route('/Design_smells')
