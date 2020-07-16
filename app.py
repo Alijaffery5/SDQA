@@ -546,7 +546,6 @@ def google_pie_chart():
     data_class = obj.data_class()
 
     total = len(lpl) + len(lm) + len(lbcl) + lc_len + len(sak) + len(data_class)
-    print(total)
     data = {'Task': 'Hours per Day', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
     'Long Base Class List(LBCL)': len(lbcl), 'Large Class(LC)': lc_len,
     'Swiss Army Knife' : len(sak), 'Data Class' : len(data_class)}
@@ -556,81 +555,84 @@ def google_pie_chart():
     return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc, data_class=data_class, sak=sak, 
     total = total, files_smells = files_smells)
 
-
 def get_individual_files_smells(lpl,lm,lbcl,lc,sak,data_class):
 
     obj = getFile()
     lis = obj.get_fileName()
     dict2 = {}
+    su = {}
+    temp = []
+    new_dict = {}
     counter = 0
+
     for keys, values in lpl.items():
-        
         gen = (x for x in lis if x == keys)
         for x in gen:
-            # dict2[x] = counter+1
+            su[x] = counter+1
+            temp.append(values['class_name'])
+            new_dict[x] = temp
             dict2 [x] = {
+                'class_name' : new_dict[x],
                 'smell_name' : 'LPL',
-                'class_name' : values['class_name'],
-                'value' : counter+1,
+                'value' : su[x]
             }
 
     for keys, values in lm.items():
         gen = (x for x in lis if x == keys)
         for x in gen:
+            su[x] += 1
+            temp.append(values['class_name'])
+            new_dict[x] = temp
             dict2 [x] = {
-                'smell_name' : 'LM',
-                'class_name' : values['class_name'],
-                'value' : counter+1,
+            'smell_name' : 'LM',
+            'class_name' : new_dict[x],
+            'value' : su[x]
             }
-            
+            # print(values['class_name'])
 
-    for keys, values in lbcl.items():
-        gen = (x for x in lis if x == keys)
-        for x in gen:
-            dict2 [x] = {
-                'smell_name' : 'LBCL',
-                # 'class_name' : values['class_name'],
-                'value' : counter,
-            }
-            for x,y in dict2.items():
-                y['value'] +=1
+    # for keys, values in lbcl.items():
+    #     gen = (x for x in lis if x == keys)
+    #     for x in gen:
+    #         su[x] += 1
+    #         dict2 [x] = {
+    #         'smell_name' : 'LBCL',
+    #         # 'class_name' : values['class_name'],
+    #         'value' : su[x]
+    #         }
 
-    for keys, values in lc.items():
-        gen = (x for x in lis if x == keys)
-        for x in gen:
-            dict2 [x] = {
-                'smell_name' : 'LC',
-                'class_name' : values['class_name'],
-                'value' : counter,
-            }
-            for x,y in dict2.items():
-                y['value'] +=1
+    # for keys, values in lc.items():
+    #     gen = (x for x in lis if x == keys)
+    #     for x in gen:
+    #         su[x] += 1
+    #         dict2 [x] = {
+    #         'smell_name' : 'LC',
+    #         'class_name' : values['class_name'],
+    #         'value' : su[x]
+    #         }
+    #         # print(values['class_name'])
 
-    for keys, values in sak.items():
-        gen = (x for x in lis if x == keys)
-        for x in gen:
-            dict2 [x] = {
-                'smell_name' : 'SAK',
-                'class_name' : values['class_name'],
-                'value' : counter,
-            }
-
-            for x,y in dict2.items():
-                y['value'] +=1
+    # for keys, values in sak.items():
+    #     gen = (x for x in lis if x == keys)
+    #     for x in gen:
+    #         su[x] += 1
+    #         dict2 [x] = {
+    #         'smell_name' : 'SAK',
+    #         'class_name' : values['class_name'],
+    #         'value' : su[x]
+    #         }
+    #         # print(values['class_name'])
 
 
-    for keys, values in data_class.items():
-        gen = (x for x in lis if x == keys)
-        for x in gen:
-            dict2 [x] = {
-                'smell_name' : 'Data Class',
-                'class_name' : values['class_name'],
-               'value' : counter,
-            }
-
-            for x,y in dict2.items():
-                y['value'] +=1
-
+    # for keys, values in data_class.items():
+    #     gen = (x for x in lis if x == keys)
+    #     for x in gen:
+    #         su[x] += 1
+    #         dict2 [x] = {
+    #         'smell_name' : 'Data_Class',
+    #         'class_name' : values['class_name'],
+    #         'value' : su[x]
+    #         }
+            # print(values['class_name'])
 
     return dict2
 
