@@ -41,13 +41,13 @@
                     <button id="export " class="btn btn-primary" onclick="export_pdf()">
                         Export as PDF
                     </button>
+                    <button class="btn btn-primary" onclick="window.print()">Print this page</button>
 
                     <script>
 
                         function export_pdf() {
+                            
                             var pdf = new jsPDF('p', 'pt', 'a4');
-
-
                             source = $('#layoutSidenav_content')[0];
 
                             specialElementHandlers = {

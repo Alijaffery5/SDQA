@@ -127,14 +127,14 @@
                         <label for="radio6">Weighted Method per Class - WMC</label>
                     </div>
                     <div class="funkyradio-primary">
-                        <input type="radio" name="options" id="radio7" value="Methods-LOC" />
-                        <label for="radio7">Methods-LOC</label>
+                        <input type="radio" name="options" id="radio7" value="Number of Superclasses" />
+                        <label for="radio7">Number of Superclasses</label>
                     </div>
                     <div class="funkyradio-primary">
-                        <input type="radio" name="options" id="radio8" value="Number of Super Classes" />
-                        <label for="radio8">Number of Superclasses</label>
+                        <input type="radio" name="options" id="radio8" value="Number of Accessors" />
+                        <label for="radio8">Number of Accessors</label>
                     </div>
-                    
+    
                 </div>
 
                 <button type="submit" class="btn btn-primary">
@@ -158,12 +158,8 @@
                     <label for="radio10">Number of Parameters</label>
                 </div>
                 <div class="funkyradio-primary">
-                    <input type="radio" name="options" id="radio11" value="Number of Method Line of Code" />
-                    <label for="radio11">Number of Method Line of Code</label>
-                </div>
-                <div class="funkyradio-primary">
-                    <input type="radio" name="options" id="radio12" value="Number of Accessors" />
-                    <label for="radio12">Number of Accessors</label>
+                    <input type="radio" name="options" id="radio11" value="Methods-LOC" />
+                    <label for="radio11">Methods-LOC</label>
                 </div>
             </div>
 
@@ -180,14 +176,12 @@
     <div className="jumbotron mt-5">
         <div className="col-sm-8 mx-auto">
             <table class="table">
+                {%if selected_option == "LCOM" %}
                 <thead>
                     <th scope="col"> <strong>Filename</strong> </th>
                     <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
                     <th scope="col"> <strong>Threshold Result </strong> </th>
-
                 </thead>
-                {%if selected_option == "LCOM" %}
-                <!-- {% include "chart.html" %} -->
                 <tbody>
                     <!-- For loop logic of jinja template -->
                     {% set count = namespace(value=0) %}
@@ -212,6 +206,11 @@
                 {%endif%}
                 {%if selected_option == "Number of Methods" or selected_option == "Number of Public Methods" or selected_option == "Number of Fields"%}
                 {% include "chart.html" %}
+                <thead>
+                    <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
+                    <th scope="col"> <strong>Threshold Result </strong> </th>
+                </thead>
                 <tbody>
                     <!-- For loop logic of jinja template -->
                     {% set count = namespace(value=0) %}
@@ -225,8 +224,37 @@
                     {% endfor %}
                 </tbody>
                 {%endif%}
+                {%if selected_option == "Number of Accessors"%}
+                {% include "chart.html" %}
+                <thead>
+                    <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong> Class Name </strong> </th>
+                    <th scope="col"> <strong>{{selected_option}}</strong> </th>
+                    <th scope="col"> <strong>Threshold Result </strong> </th>
+                </thead>
+                <tbody>
+                    <!-- For loop logic of jinja template -->
+                    {% set count = namespace(value=0) %}
+                    {% for filename, val in NOA.items() %}
+                    {% for class_ , val2  in val.items() %}
+                    <tr>
+                        <td> {{ filename }} </td>
+                        <td> {{ class_ }} </td>
+                        <td> {{ val2 }} </td>
+                        <td> {{threshold[count.value]}} </td>
+                        {% set count.value = count.value + 1 %}
+                    </tr>
+                    {% endfor %}
+                    {% endfor %}
+                </tbody>
+                {%endif%}
                 {%if selected_option == "Cyclomatic Complexity"%}
                 <!-- {% include "chart.html" %} -->
+                <thead>
+                    <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
+                    <th scope="col"> <strong>Threshold Result </strong> </th>
+                </thead>
                 <tbody>
                     <!-- For loop logic of jinja template -->
                     {% for x,y in cc_value2.items() %}
@@ -242,6 +270,11 @@
                 {%endif%}
                 {%if selected_option == "LOC"%}
                 {% include "chart.html" %}
+                <thead>
+                    <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
+                    <th scope="col"> <strong>Threshold Result </strong> </th>
+                </thead>
                 <tbody>
                     <!-- For loop logic of jinja template -->
                     {% for file,val in loc.items() %}
@@ -298,6 +331,11 @@
                 </div>
                 {%endif%}
                 {%if selected_option == "Number of Parameters"%}
+                <thead>
+                    <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
+                    <th scope="col"> <strong>Threshold Result </strong> </th>
+                </thead>
                 <!-- {% include "chart.html" %} -->
                 <tbody>
                     <!-- For loop logic of jinja template -->
@@ -317,6 +355,11 @@
                 </tbody>
                 {%endif%}
                 {%if selected_option == "WMC"%}
+                <thead>
+                    <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
+                    <th scope="col"> <strong>Threshold Result </strong> </th>
+                </thead>
                 <!-- {% include "chart.html" %} -->
                 <tbody>
                     {% for x,y in wmc.items() %}
@@ -332,7 +375,12 @@
                 </tbody>
                 {%endif%}
 
-                {%if selected_option == "Number_of_accessors"%}
+                {%if selected_option == "Number of Method Line of Code"%}
+                <thead>
+                    <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
+                    <th scope="col"> <strong>Threshold Result </strong> </th>
+                </thead>
                 <!-- {% include "chart.html" %} -->
                 <tbody>
                     {% for x,y in NOA.items() %}
@@ -349,16 +397,44 @@
                 {%endif%}
 
                 {%if selected_option == "Methods-LOC"%}
+                <thead>
+                    <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
+                    <th scope="col"> <strong>Threshold Result </strong> </th>
+                </thead>
                 <tbody>
                     <!-- For loop logic of jinja template -->
+                    {% set count = namespace(value=0) %}
                     {% for file,val in NOML.items() %}
                     <tr>
                         <td> {{ filename }} </td>
                         <td> {{ file,val|length }} </td>
-                        <td> {{ threshold }} </td>
+                        <td> {{threshold[count.value]}} </td>
+                        {% set count.value = count.value + 1 %}
                     </tr>
                     {% endfor %}
                     {%endif%}
+
+                    {%if selected_option == "Number of Superclasses"%}
+                    <thead>
+                        <th scope="col"> <strong>Filename</strong> </th>
+                        <th scope="col"> <strong> Names of Superclasses </strong> </th>
+                        <th scope="col"> <strong>{{selected_option}}</strong> </th>
+                        <th scope="col"> <strong>Threshold Result </strong> </th>
+                    </thead>
+                    <tbody>
+                        <!-- For loop logic of jinja template -->
+                        {% set count = namespace(value=0) %}
+                        {% for filename ,val in SUP.items() %}
+                        <tr>
+                            <td> {{ filename }} </td>
+                            <td> {{ val }} </td>
+                            <td> {{ val|length }} </td>
+                            <td> {{threshold[count.value]}} </td>
+                            {% set count.value = count.value + 1 %}
+                        </tr>
+                        {% endfor %}
+                        {%endif%}
 
             </table>
         </div>

@@ -288,17 +288,18 @@ def files_comparison(fromfile, tofile):
             fromlines = open(fromfile, 'U').readlines()
             tolines = open(tofile, 'U').readlines()
             diff = difflib.HtmlDiff().make_file(fromlines,tolines,fromfile,tofile)
-            path = os.path.basename(fromfile) + '_' + os.path.basename(tofile) + '_diff.html'
+            # path = os.path.basename(fromfile) + '_' + os.path.basename(tofile) + '_diff.html'
+            path = "Comparison Report.html"
             f = open(path,'w')
             f.write(diff)
             f.close()
+            import webbrowser
+            webbrowser.open_new_tab(path)
             return path
-            #import webbrowser
-            #webbrowser.open_new_tab(path)
         except Exception as e:
             # self.logger.error("failed to diff files %s, %s: %s", fromfile, tofile, str(e))
             return None 
-
+   
 @app.route('/trend_analysis', methods=['GET', 'POST'])
 def trend_analysis():
 
@@ -358,12 +359,13 @@ def trend_analysis():
         array = []
         for line in same:
             array.append(line)
-        
+
         files_comparison(previous_version, new_version)
         flash('Comparison Report Generated Successfully!!', 'success')
 
         previous_content = get_contents(previous_version)
         new_content = get_contents(new_version)
+
         from Design_Smells_Specific_file import DesignSmells_2
         obj = DesignSmells_2()
         #1
@@ -414,14 +416,13 @@ def trend_analysis():
         data_class = obj.data_class()
 
         files_smells = get_individual_files_smells(lpl,lm,lbcl,lc,sak,data_class)
-        print(files_smells)
     
         return render_template('trend_analysis.html', array = array, lis = lis, previous_content = previous_content, new_content = new_content,
-        files_smells=files_smells, new_smells = new_smells, previous_smells = previous_smells, previous=previous, filename = filename,
-        diff = diff )
+        files_smells=files_smells, new_smells = new_smells, previous_smells = previous_smells, previous=previous, filename = filename)
     else:
         return render_template('trend_analysis.html', lis = lis)
-
+    
+    
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
@@ -535,18 +536,28 @@ def metrics():
         
         elif selected_option == "Number of Accessors":
             for item in lis:
-                return render_template("metrics.html", filename=item,  NOA = metrics_obj.Number_of_accessors(item), selected_option=selected_option)
+                dict = {}
+                dict[item] = metrics_obj.Number_of_accessors(item)
+                return render_template("metrics.html", filename=item,  NOA = dict, threshold = compare_NOA(item), selected_option=selected_option)
 
         elif selected_option == "Methods-LOC":
-            
             for item in lis:
                 return render_template("metrics.html", filename=item, threshold = compare_NOM_LOC(item), NOML = metrics_obj.get_NOML(item), selected_option=selected_option)
+
+        elif selected_option == "Number of Superclasses":
+            for item in lis:
+                dit = {}
+                dict = {}
+                for class_ in getFile().get_full_classname(item):
+                    dict[class_] = metrics_obj.dit_list(class_ , item)
+                    dit[item] = dict
+                return render_template("metrics.html", filename=item, threshold = compare_NOM_LOC(item), SUP = dit, selected_option=selected_option)
 
         else:
             return render_template("metrics.html", selected_option=selected_option)
 
     else:
-        print(metrics_obj.testing("phones.py"))
+        # print(metrics_obj.testing("phones.py"))
         return render_template("metrics.html")
 
 @app.route('/Design_smells')
@@ -848,6 +859,17 @@ def compare_NOP(file):
             temp.append("Good/Common")
         elif 2 < y <= 4:
             temp.append("Regular/Casual")
+        elif y > 4:
+            temp.append("Violation/Bad")
+    return temp
+
+def compare_NOA(file):
+
+    temp = []
+    for x, y in metrics_obj.Number_of_accessors(file).items():
+
+        if y <= 4:
+            temp.append("Good/Common")
         elif y > 4:
             temp.append("Violation/Bad")
     return temp
