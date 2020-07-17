@@ -418,6 +418,7 @@
                     {%if selected_option == "Number of Superclasses"%}
                     <thead>
                         <th scope="col"> <strong>Filename</strong> </th>
+                        <th scope="col"> <strong> Class name </strong> </th>
                         <th scope="col"> <strong> Names of Superclasses </strong> </th>
                         <th scope="col"> <strong>{{selected_option}}</strong> </th>
                         <th scope="col"> <strong>Threshold Result </strong> </th>
@@ -426,13 +427,16 @@
                         <!-- For loop logic of jinja template -->
                         {% set count = namespace(value=0) %}
                         {% for filename ,val in SUP.items() %}
+                        {% for x,y in val.items() %}
                         <tr>
                             <td> {{ filename }} </td>
-                            <td> {{ val }} </td>
-                            <td> {{ val|length }} </td>
+                            <td> {{ x }} </td>
+                            <td> {{ y }} </td>
+                            <td> {{ y|length }} </td>
                             <td> {{threshold[count.value]}} </td>
                             {% set count.value = count.value + 1 %}
                         </tr>
+                        {% endfor %}
                         {% endfor %}
                         {%endif%}
 
