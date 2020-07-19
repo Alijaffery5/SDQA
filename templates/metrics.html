@@ -399,6 +399,7 @@
                 {%if selected_option == "Methods-LOC"%}
                 <thead>
                     <th scope="col"> <strong>Filename</strong> </th>
+                    <th scope="col"> <strong> Method Name </strong> </th>
                     <th scope="col"> <strong>{{selected_option}}{{" value"}}</strong> </th>
                     <th scope="col"> <strong>Threshold Result </strong> </th>
                 </thead>
@@ -408,7 +409,8 @@
                     {% for file,val in NOML.items() %}
                     <tr>
                         <td> {{ filename }} </td>
-                        <td> {{ file,val|length }} </td>
+                        <td> {{ file, }} </td>
+                        <td> {{ val|length }} </td>
                         <td> {{threshold[count.value]}} </td>
                         {% set count.value = count.value + 1 %}
                     </tr>

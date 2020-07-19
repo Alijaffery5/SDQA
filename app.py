@@ -29,7 +29,11 @@ metrics_obj = Metrics_defined()
 app = Flask(__name__)
 
 # MONGO
-myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+# myclient = pymongo.MongoClient("mongodb://localhost:27017/")
+
+myclient = pymongo.MongoClient("mongodb+srv://sdqa:sdqa_8812@sdqa-cluster.7xpvw.mongodb.net/sdqa?retryWrites=true&w=majority")
+db = myclient.test
+
 # DB Configuration
 mydb = myclient["sdqa"]
 Code = mydb["source_code"]
@@ -551,7 +555,7 @@ def metrics():
                 for class_ in getFile().get_full_classname(item):
                     dict[class_] = metrics_obj.dit_list(class_ , item)
                     dit[item] = dict
-                return render_template("metrics.html", filename=item, threshold = compare_NOM_LOC(item), SUP = dit, selected_option=selected_option)
+                return render_template("metrics.html", filename=item, threshold = compare_SUP(item), SUP = dit, selected_option=selected_option)
 
         else:
             return render_template("metrics.html", selected_option=selected_option)
@@ -703,7 +707,7 @@ def dashboard():
         obj = getFile()
         lis = obj.get_fileName()
         codes = len(lis)
-        return render_template('dashboard.html', title='Lines of Codes Uploaded each Month', total = total, max=4800, labels=bar_labels, values=bar_values,
+        return render_template('dashboard.html', title='Dates on which codes uploaded', total = total, max=500, labels=bar_labels, values=bar_values,
         codes = codes)
 
     return render_template('login.html')
@@ -753,15 +757,11 @@ def pdf_template():
 
 
 labels = [
-    'JAN', 'FEB', 'MAR', 'APR',
-    'MAY', 'JUN', 'JUL', 'AUG',
-    'SEP', 'OCT', 'NOV', 'DEC'
+    '02-06-2020', '17-06-2020', '17-07-2020'
 ]
 
 values = [
-    100, 253, 1000, 200,
-    2328, 2504, 2873, 4764,
-    4800, 600, 990, 900
+    210, 91, 168
 ]
 
 colors = [
@@ -884,6 +884,21 @@ def compare_NOM_LOC(file):
         elif 10 < val <= 32:
             temp.append("Regular/Casual")
         elif val > 32:
+            temp.append("Violation/Bad")
+    return temp
+
+def compare_SUP(file):
+
+    temp = []
+    dit = {}
+
+    for class_ in getFile().get_full_classname(file):
+        dit[class_] = metrics_obj.dit_list(class_ , file)
+    for x,val in dit.items():
+        val = len(val)
+        if val <= 4:
+            temp.append("Good/Common")
+        elif val > 4:
             temp.append("Violation/Bad")
     return temp
 

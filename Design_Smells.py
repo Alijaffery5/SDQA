@@ -153,6 +153,3 @@ class DesignSmells():
         def inner_method(self):
 
             dict = {}
-
-
-        
