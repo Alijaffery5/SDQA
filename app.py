@@ -459,26 +459,25 @@ def metrics():
         elif selected_option == "Number of Methods":
             dict = {}
             array_nom = []
-            t = []
+            
             for item in lis:
                 array_nom.append(metrics_obj.Number_of_methods(item))
                 dict[item] = metrics_obj.Number_of_methods(item)
-                t.append(compare_NOM(item))
-            labels = lis
-            values = array_nom
-            return render_template("metrics.html", dict=dict, threshold=t, selected_option=selected_option, title='NOM Metric Threshold', max=80, labels=labels, values=values)
+                labels = lis
+                values = array_nom
+                return render_template("metrics.html", dict=dict, threshold=compare_NOM(item), selected_option=selected_option, title='NOM Metric Threshold', max=80, labels=labels, values=values)
 
         elif selected_option == "Number of Public Methods":
             dict = {}
             array_nom = []
-            t = []
+            
             for item in lis:
                 array_nom.append(metrics_obj.Number_of_public_methods(item))
                 dict[item] = metrics_obj.Number_of_public_methods(item)
-                t.append(compare_NOM(item))
-            labels = lis
-            values = array_nom
-            return render_template("metrics.html", dict=dict, threshold=t, selected_option=selected_option, title='NOPM Metric Threshold', max=600, labels=labels, values=values)
+                
+                labels = lis
+                values = array_nom
+                return render_template("metrics.html", dict=dict, threshold=compare_NOM(item), selected_option=selected_option, title='NOPM Metric Threshold', max=600, labels=labels, values=values)
 
         elif selected_option == "Number of Parameters":
             dict = {}
@@ -500,18 +499,16 @@ def metrics():
 
             dict = {}
             array_nof = []
-            t = []
             for item in lis:
                 array_nof.append(metrics_obj.Number_of_fields(item))
             for item in lis:
                 dict[item] = metrics_obj.Number_of_fields(item)
-                t.append(compare_NOF(item))
-            labels = lis
-            values = array_nof
-            return render_template("metrics.html", dict=dict, threshold=t, selected_option=selected_option, title='NOF Metric Threshold', max=30, labels=labels, values=values)
+                labels = lis
+                values = array_nof
+                return render_template("metrics.html", dict=dict, threshold=compare_NOF(item), selected_option=selected_option, title='NOF Metric Threshold', max=30, labels=labels, values=values)
 
         elif selected_option == "LOC":
-            data = {'Task': 'Hours per Day', 'Classes lies within Normal Threshold': 1,
+            data = {'Task': 'Number of Smells deteccted', 'Classes lies within Normal Threshold': 1,
                     'Quit Above Threshold': 0, 'Dangerously Above threshold': 0}
             array_loc_val = []
             dict = {}
@@ -584,9 +581,11 @@ def google_pie_chart():
     sak = obj.swiss_army_knife()
     #6
     data_class = obj.data_class()
+    #7
+    god_class = obj.God_Class()
 
     total = len(lpl) + len(lm) + len(lbcl) + lc_len + len(sak) + len(data_class)
-    data = {'Task': 'Hours per Day', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
+    data = {'Task': 'Number of smells', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
     'Long Base Class List(LBCL)': len(lbcl), 'Large Class(LC)': lc_len,
     'Swiss Army Knife' : len(sak), 'Data Class' : len(data_class)}
 
@@ -785,23 +784,25 @@ def get_CC(file):
 
 def compare_NOM(file):
     temp = []
-    if metrics_obj.Number_of_methods(file) <= 6:
-        temp.append("Lies within Normal Threshold")
-    elif 6 < metrics_obj.Number_of_methods(file) <= 14:
-        temp.append("Casual/Quuite above threshold")
-    elif metrics_obj.Number_of_methods(file) > 14:
-        temp.append("Violation")
+    for x, y in metrics_obj.Number_of_methods(file).items():
+        if y <= 6:
+            temp.append("Lies within Normal Threshold")
+        elif 6 < y <= 14:
+            temp.append("Casual/Quuite above threshold")
+        elif y > 14:
+            temp.append("Violation")
     return temp
 
 
 def compare_NOF(file):
     temp = []
-    if metrics_obj.Number_of_fields(file) <= 3:
-        temp.append("Lies within Normal Threshold")
-    elif 3 < metrics_obj.Number_of_fields(file) <= 8:
-        temp.append("Casual/Quuite above threshold")
-    elif metrics_obj.Number_of_fields(file) > 8:
-        temp.append("Violation")
+    for x, y in metrics_obj.Number_of_fields(file).items():
+        if y <= 3:
+            temp.append("Lies within Normal Threshold")
+        elif 3 < y <= 8:
+            temp.append("Casual/Quuite above threshold")
+        elif y > 8:
+            temp.append("Violation")
     return temp
 
 

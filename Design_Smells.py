@@ -153,3 +153,30 @@ class DesignSmells():
         def inner_method(self):
 
             dict = {}
+
+
+    def God_Class(self):
+
+        smells = {}
+        for file in getFile.get_fileName(self):
+            loc = Metrics_defined().get_LOC_class(file)
+            NOM = Metrics_defined().Number_of_methods(file)
+            NOF = Metrics_defined().Number_of_fields(file)
+            NOA = Metrics_defined().Number_of_accessors(file)
+            # print(NOM)
+            print(NOF)
+            # print(NOF)
+            # print(NOA)
+            
+            for class_ , details in loc.items():
+                if details['value'] > 50:
+                    smells [file] = {
+                    'line_number' : details['line_number'],
+                    'class_name' : class_,
+                    'loc' : details['value'],
+                    'normal' : "1-300"
+                    }
+
+                return smells
+        
+        LOC,NOM,NOF,NOA

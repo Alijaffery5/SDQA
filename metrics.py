@@ -18,15 +18,79 @@ class Metrics_defined:
         cmd.pop()
         return cmd
 
-    def Number_of_methods(self, file):
-        counter = 0
-        with open("data/"+file, "r") as file:
-            for line in file:
-                for word in line.split():
-                    if word == "def" or word == "def __":
-                        counter += 1
+    def Number_of_methods(self,file):
+            counter = 0
+            dic = {}
+            with open("data/"+file, "r") as file:
+                
+                for line in file:
+                    if 'class ' in line:
+                        class_ = line.split('class')[1][1:-2].strip()
+                        counter = 0
 
-        return counter
+                    if 'def' in line or 'def __' in line:
+                        counter+=1
+                        dic[class_] = counter
+
+            if '' in dic:
+                del dic['']
+
+            return dic
+
+
+    def Number_of_public_methods(self,file):
+        counter = 0
+        dic = {}
+        with open("data/"+file, "r") as file:
+            
+            for line in file:
+                if 'class ' in line:
+                    class_ = line.split('class')[1][1:-2].strip()
+                    counter = 0
+                arr = line.split()
+                if len(arr) < 2:
+                    continue
+                if arr[0] == 'def':
+                    if arr[1][:2] != '__':
+                        counter+=1
+                        dic[class_] = counter
+
+        if '' in dic:
+            del dic['']
+
+        return dic
+
+    def Number_of_fields(self,file):
+        counter = 0
+        dic = {}
+        
+        with open("data/"+file, "r") as file:
+
+            flag = False
+            
+            for line in file:
+                if 'class ' in line:
+                    class_ = line.split('class')[1][1:-2].strip()
+                    counter = 0
+                arr = line.split()
+                if len(arr) < 2:
+                    continue
+                if arr[1].find('__init__') != -1:
+                    flag = True
+                    continue
+
+                if flag:
+                    if line.find("self.") != -1:
+                        counter+=1
+                        dic[class_] = counter
+
+                    else:
+                        flag = False
+
+        if '' in dic:
+            del dic['']
+
+        return dic
 
 
     def Number_of_parameters_(self, file):
@@ -55,44 +119,6 @@ class Metrics_defined:
                     dic[line] = counter
 
         return dic
-
-    def Number_of_public_methods(self, file):
-        counter = 0
-        with open("data/"+file, "r") as file:
-
-            for line in file:
-                arr = line.split()
-                if len(arr) < 2:
-                    continue
-                if arr[0] == 'def':
-                    if arr[1][:2] != '__':
-                        counter += 1
-
-        return counter
-
-    def Number_of_fields(self, file):
-        counter = 0
-        with open("data/"+file, "r") as file:
-
-            flag = False
-
-            for line in file:
-                arr = line.split()
-                if len(arr) < 2:
-                    continue
-
-                if arr[1].find('__init__') != -1:
-                    flag = True
-                    continue
-
-                if flag:
-                    if line.find("self.") != -1:
-                        counter += 1
-
-                    else:
-                        flag = False
-
-        return counter
 
     def get_WMC(self, file):
         dict = {"Phone": 5, "Mobile Phone": 8, "Iphone": 3, "Ïphone6": 2,
