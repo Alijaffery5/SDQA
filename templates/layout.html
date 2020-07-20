@@ -10,7 +10,8 @@
     <meta name="author" content="">
 
 
-    <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet">
+    <!-- <link href="{{ url_for('static', filename='assets/css/bootstrap.min.css') }}" rel="stylesheet"> -->
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
     <style>
         html,
         body {
@@ -66,8 +67,15 @@
 
     
 {% block scripts %}
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script src="{{ url_for('static', filename='js/jquery.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<script>
+    $("#warning-alert").fadeTo(2000, 500).slideUp(500, function(){
+    $("#warning-alert").slideUp(500);
+});
+</script>
+
 {% endblock %}
 
 </body>

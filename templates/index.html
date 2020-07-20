@@ -1,8 +1,23 @@
 <head>
 <title>SDQA</title>
+<link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.1/css/bootstrap.min.css">
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 </head>
 
 {% block content %}
+<div class="container-fluid">
+  {% with messages = get_flashed_messages() %}
+  {% if messages %} 
+      {% for message in messages %}
+      <div class="alert alert-success" role="alert" id="success-alert">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button> 
+        {{message}}
+      </div>
+      {% endfor %}
+    {% endif %}
+  {% endwith %}
 
 <header class="masthead">
     <div class="container-fluid" style="background-image: url(/static/assets/img/background.jpg); height: 100%; background-position: center; background-repeat: no-repeat; background-size: cover;">
@@ -14,9 +29,15 @@
       </div>
     </div>
   </header>
+</div>
 
 {% endblock %}
 
 {% block scripts %}
 <link href="/static/assets/css/index.css" rel="stylesheet">
+<script>
+  $("#success-alert").fadeTo(2000, 500).slideUp(500, function(){
+  $("#success-alert").slideUp(500);
+});
+</script>
 {% endblock %}

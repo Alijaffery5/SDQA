@@ -31,7 +31,7 @@ app = Flask(__name__)
 # MONGO
 # myclient = pymongo.MongoClient("mongodb://localhost:27017/")
 
-myclient = pymongo.MongoClient("mongodb+srv://sdqa:sdqa_8812@sdqa-cluster.7xpvw.mongodb.net/sdqa?retryWrites=true&w=majority")
+myclient = pymongo.MongoClient("mongodb+srv://sdqa:sdqa8812@sdqa-cluster.7xpvw.mongodb.net/sdqa?retryWrites=true&w=majority")
 db = myclient.test
 
 # DB Configuration
@@ -135,9 +135,10 @@ def login():
             if bcrypt.checkpw(request.form['pass'].encode('utf-8'), login_user['password'].encode('utf-8')):
 
                 session['username'] = request.form['username']
+                flash("Logged In Successfully!!")
                 return redirect(url_for('index'))
 
-    # return 'Invalid username/password combination'
+    flash("Incorrect Username/Password")
     return render_template('login.html')
 
 @app.route('/register', methods=['POST', 'GET'])
@@ -151,9 +152,9 @@ def register():
             User.insert({'name' : request.form['username'], 'password' : hashpass.decode('utf-8')})
             session['username'] = request.form['username']
             flash("Account created!", 'primary')
-            return redirect(url_for('index'))
+            return redirect(url_for('login'))
         
-        flash('That username already exists!', 'warning')
+        flash('That username already exists!')
 
     return render_template('register.html')
 
