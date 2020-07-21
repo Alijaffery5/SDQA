@@ -1,12 +1,23 @@
 import os
 from radon.visitors import ComplexityVisitor
 from radon.complexity import cc_rank, cc_visit
+import re
 
 class Metrics_defined:
 
     def lcom4(self, file):
         cmd = os.popen("lcom data/"+file).read().split('\n')
         return cmd
+
+    def get_lcom4(self, file):
+        list = []
+        for x in Metrics_defined().lcom4(file):
+            if (x != '' and x != '+-----------------------------+------+' and x != 'Calculating LCOM using LCOM4'):
+                n = 2
+                i = (re.findall("|".join(["[^|]+"]*n), x))
+                if (i[1] != ' LCOM '):
+                    list.append(i[1])
+        return list
 
     def cyclomatic_complexity(self, file):
         cmd = os.popen("radon cc data/"+file + " -s").read().split('\n')

@@ -149,34 +149,49 @@ class DesignSmells():
 
 
     def feature_envy(self):
-        var = 2
-        def inner_method(self):
+        smells = {}
+        for file in getFile.get_fileName(self):
+            AID = Metrics_defined().get_aid(file)
+            for class_ , details in AID.items():
+                if details['AID'] > 4:
+                    smells [file] = {
+                    'class_name' : class_,
+                    'AID' : details['AID'],
+                    'normal' : "1-4"
+                    }
 
-            dict = {}
+        return smells
 
 
     def God_Class(self):
 
         smells = {}
+        y = 0
+        
         for file in getFile.get_fileName(self):
             loc = Metrics_defined().get_LOC_class(file)
+            
             NOM = Metrics_defined().Number_of_methods(file)
             NOF = Metrics_defined().Number_of_fields(file)
             NOA = Metrics_defined().Number_of_accessors(file)
-            # print(NOM)
-            print(NOF)
-            # print(NOF)
-            # print(NOA)
+            LCOM = Metrics_defined().get_lcom4(file)
             
-            for class_ , details in loc.items():
-                if details['value'] > 50:
-                    smells [file] = {
-                    'line_number' : details['line_number'],
-                    'class_name' : class_,
-                    'loc' : details['value'],
-                    'normal' : "1-300"
-                    }
+                    
+            
+            for class_ , value in NOM.items():
+                for class_ , value_3 in NOF.items():
+                    for class_ , value_4 in NOA.items():
+                        
+                        for lcom in LCOM:
+                            for class_ , details2 in loc.items():
+                                for x,y in details2.items():
+                                    
+                                    if int(y) > 50 and value_4 > 4 and float(lcom) >= 2:
+                                        
+                                        smells [file] = {
+                                        'class_name' : class_,
+                                        # 'value' : counter,
+                                        'violations' : 'loc, LCOM, NOA'
+                                        }
 
                 return smells
-        
-        LOC,NOM,NOF,NOA

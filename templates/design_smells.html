@@ -123,6 +123,33 @@
           }
         }
 
+        else if (smell_name == 'God Class') {
+          $('#table_div').find('td').detach();
+          $('#table_div').find('th').detach();
+          if ($('#table_div table').length > 0) {
+            var th_row = $('<tr></tr>');
+            var col1 = $('<th></th>').text('Filename');
+            // var col2 = $('<th></th>').text('Line Number');
+            var col2 = $('<th></th>').text('Class Name');
+            var col3 = $('<th></th>').text('Violations of metrics');
+            th_row.append(col1,col2, col3);
+            $('#table_div thead').append(th_row);
+            {% for x, y in god_class.items() %}
+            var row = $('<tr class = table-danger ></tr>');
+            var col1 = $('<td></td>').addClass('bar').text('{{ x }}');
+            var col2 = $('<td></td>').addClass('bar').text('{{ y['class_name'] }}');
+            var col3 = $('<td></td>').addClass('bar').text('{{ y['violations'] }}');
+            row.append(col1, col2, col3, col4);
+            $('#table_div table').append(row);
+            {% endfor %}
+
+            $('#table_div h2').text(smell_name);
+            $('#table_div p').text('Showing details of' + " " + smell_name + " " + 'smell detected');
+          }
+        }
+
+
+
         else if (smell_name == 'Long Base Class List(LBCL)') {
           $('#table_div').find('td').detach();
           $('#table_div').find('th').detach();

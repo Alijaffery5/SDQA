@@ -583,16 +583,19 @@ def google_pie_chart():
     data_class = obj.data_class()
     #7
     god_class = obj.God_Class()
+    #8
+    feature_envy = obj.feature_envy()
+    print(feature_envy)
 
-    total = len(lpl) + len(lm) + len(lbcl) + lc_len + len(sak) + len(data_class)
+    total = len(lpl) + len(lm) + len(lbcl) + lc_len + len(sak) + len(data_class) + len(god_class)
     data = {'Task': 'Number of smells', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
     'Long Base Class List(LBCL)': len(lbcl), 'Large Class(LC)': lc_len,
-    'Swiss Army Knife' : len(sak), 'Data Class' : len(data_class)}
+    'Swiss Army Knife' : len(sak), 'Data Class' : len(data_class) , 'God Class' : len(god_class)}
 
     files_smells = get_individual_files_smells(lpl,lm,lbcl,lc,sak,data_class)
 
     return render_template('design_smells.html', data=data, lpl=lpl, lm = lm, lbcl = lbcl, lc=lc, data_class=data_class, sak=sak, 
-    total = total, files_smells = files_smells)
+     god_class = god_class, total = total, files_smells = files_smells)
 
 def get_individual_files_smells(lpl,lm,lbcl,lc,sak,data_class):
 
@@ -822,11 +825,11 @@ def compare_LCOM(file):
     temp = []
     for x in get_lcom4(file):
 
-        if float(x) <= 2:
+        if float(x) == 1:
             temp.append("cohesive class, which is the good class")
-        elif 2 < float(x) <= 4:
+        elif float(x) >= 2:
             temp.append("problem, the class should be split into many classes")
-        elif float(x) > 4:
+        elif float(x) == 0:
             temp.append("no methods in a class")
     return temp
 
