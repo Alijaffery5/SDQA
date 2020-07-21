@@ -11,12 +11,16 @@ class Metrics_defined:
 
     def get_lcom4(self, file):
         list = []
-        for x in Metrics_defined().lcom4(file):
-            if (x != '' and x != '+-----------------------------+------+' and x != 'Calculating LCOM using LCOM4'):
-                n = 2
-                i = (re.findall("|".join(["[^|]+"]*n), x))
-                if (i[1] != ' LCOM '):
-                    list.append(i[1])
+        try:
+            for x in Metrics_defined().lcom4(file):
+                if (x != '' and x != '+-----------------------------+------+' and x != 'Calculating LCOM using LCOM4'):
+                    n = 2
+                    i = (re.findall("|".join(["[^|]+"]*n), x))
+                    print(i)
+                    if (i[1] != ' LCOM '):
+                        list.append(i[1])
+        except:
+            return "Error"
         return list
 
     def cyclomatic_complexity(self, file):
@@ -32,6 +36,7 @@ class Metrics_defined:
     def Number_of_methods(self,file):
             counter = 0
             dic = {}
+            class_ = ''
             with open("data/"+file, "r") as file:
                 
                 for line in file:
@@ -189,37 +194,40 @@ class Metrics_defined:
 
     def find_parent(self, c, file):
         
-        cleanpath = os.path.abspath("data/"+file)
-        datafile = open(cleanpath, 'r')
+        try:
+            cleanpath = os.path.abspath("data/"+file)
+            datafile = open(cleanpath, 'r')
 
-        imports = []
-        classes = []
+            imports = []
+            classes = []
 
-        for line in datafile:
-            if 'import' in line:
-                for x in line.split('import')[1].split(','):
-                    imports.append(x.strip())
+            for line in datafile:
+                if 'import' in line:
+                    for x in line.split('import')[1].split(','):
+                        imports.append(x.strip())
 
-            if 'class ' in line:
-                classes.append(line.split('class')[1][1:-2].strip())
-        if '(' not in c:
-            return ''
-
-        s = c[c.find("(")+1:c.find(")")].split(',')
-        s = s[0]
-        parent = ''
-        flag = True
-        for x in imports:
-            if s == x:
-                parent = x
-                flag = False
-                break
-        if flag:
-            for x in classes:
-                if s in x:
+                if 'class ' in line:
+                    classes.append(line.split('class')[1][1:-2].strip())
+            if '(' not in c:
+                return ''
+            
+            s = c[c.find("(")+1:c.find(")")].split(',')
+            s = s[0]
+            parent = ''
+            flag = True
+            for x in imports:
+                if s == x:
                     parent = x
+                    flag = False
                     break
-        return s + ' ' + Metrics_defined().find_parent(parent, file)
+            if flag:
+                for x in classes:
+                    if s in x:
+                        parent = x
+                        break
+            return s + ' ' + Metrics_defined().find_parent(parent, file)
+        except:
+            return "Error"
 
 
     def get_aid(self, file):

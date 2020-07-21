@@ -450,34 +450,55 @@ def metrics():
         selected_option = request.form['options']
         lis = obj.get_fileName()
         item = 0
+        list2 = []
         if selected_option == "LCOM":
             temp = []
             for item in lis:
                 temp.append(metrics_obj.lcom4(item))
+                list2.append(compare_LCOM(item))
 
-                return render_template("metrics.html", lcom=metrics_obj.lcom4(item), threshold=compare_LCOM(item), filename=item, selected_option=selected_option)
+            new_list = []
+            new_list = [ item for elem in list2 for item in elem]
+            return render_template("metrics.html", lcom=metrics_obj.lcom4(item), threshold=new_list, filename=item, selected_option=selected_option)
         elif selected_option == "Number of Methods":
             dict = {}
-            array_nom = []
-            
+            array_nom = {}
+            cn = []
             for item in lis:
-                array_nom.append(metrics_obj.Number_of_methods(item))
+                
                 dict[item] = metrics_obj.Number_of_methods(item)
-                labels = lis
-                values = array_nom
-                return render_template("metrics.html", dict=dict, threshold=compare_NOM(item), selected_option=selected_option, title='NOM Metric Threshold', max=80, labels=labels, values=values)
+                cn.append(compare_NOM(item))
+                
+            labels = []
+            values = []
+            for x,y in dict.items():
+                for temp,temp2 in y.items():
+                    labels.append(temp)
+                    values.append(temp2)
+                
+            new_list = []
+            new_list = [ item for elem in cn for item in elem]
+            return render_template("metrics.html", dict=dict, threshold=new_list, selected_option=selected_option, title='NOM Metric Threshold', max=30, labels=labels, values=values)
 
         elif selected_option == "Number of Public Methods":
             dict = {}
             array_nom = []
-            
+            cn = []
             for item in lis:
                 array_nom.append(metrics_obj.Number_of_public_methods(item))
                 dict[item] = metrics_obj.Number_of_public_methods(item)
+                cn.append(compare_NOM(item))
+
+            labels = []
+            values = []
+            for x,y in dict.items():
+                for temp,temp2 in y.items():
+                    labels.append(temp)
+                    values.append(temp2)
                 
-                labels = lis
-                values = array_nom
-                return render_template("metrics.html", dict=dict, threshold=compare_NOM(item), selected_option=selected_option, title='NOPM Metric Threshold', max=600, labels=labels, values=values)
+            new_list = []
+            new_list = [ item for elem in cn for item in elem]
+            return render_template("metrics.html", dict=dict, threshold=new_list, selected_option=selected_option, title='NOPM Metric Threshold', max=80, labels=labels, values=values)
 
         elif selected_option == "Number of Parameters":
             dict = {}
@@ -488,24 +509,38 @@ def metrics():
                 array_nom.append(metrics_obj.Number_of_parameters(item))
                 dict[item] = metrics_obj.Number_of_parameters(item)
                 cn.append(compare_NOP(item))
+            
             for x in cn:
                 for y in x:
                     cn2.append(y)
+            new_list = []
+            new_list = [ item for elem in cn for item in elem]
+            
             labels = lis
             values = array_nom
-            return render_template("metrics.html", parameters=dict, threshold=cn2, selected_option=selected_option, title='NOP Metric Threshold', max=30, labels=labels, values=values)
+            
+            return render_template("metrics.html", parameters=dict, threshold=new_list, selected_option=selected_option, title='NOP Metric Threshold', max=30, labels=labels, values=values)
 
         elif selected_option == "Number of Fields":
 
             dict = {}
-            array_nof = []
+            array_nom = []
+            cn = []
             for item in lis:
-                array_nof.append(metrics_obj.Number_of_fields(item))
-            for item in lis:
+                array_nom.append(metrics_obj.Number_of_fields(item))
                 dict[item] = metrics_obj.Number_of_fields(item)
-                labels = lis
-                values = array_nof
-                return render_template("metrics.html", dict=dict, threshold=compare_NOF(item), selected_option=selected_option, title='NOF Metric Threshold', max=30, labels=labels, values=values)
+                cn.append(compare_NOF(item))
+
+            labels = []
+            values = []
+            for x,y in dict.items():
+                for temp,temp2 in y.items():
+                    labels.append(temp)
+                    values.append(temp2)
+                    
+            new_list = []
+            new_list = [ item for elem in cn for item in elem]
+            return render_template("metrics.html", dict=dict, threshold=new_list, selected_option=selected_option, title='NOF Metric Threshold', max=30, labels=labels, values=values)
 
         elif selected_option == "LOC":
             data = {'Task': 'Number of Smells deteccted', 'Classes lies within Normal Threshold': 1,
@@ -525,25 +560,41 @@ def metrics():
 
             dict = {}
             array_val = []
+            cn = []
             for item in lis:
                 array_val.append(metrics_obj.cyclomatic_complexity(item))
                 dict[item] = metrics_obj.cyclomatic_complexity(item)
+                cn.append(compare_CC(item))
+
             labels = lis
             values = array_val
-            return render_template("metrics.html", cc_value2=dict, threshold=compare_CC(item), selected_option=selected_option, title='CC Metric Threshold', max=10, labels=labels, values=values)
+            new_list = []
+            new_list = [ item for elem in cn for item in elem]
+            print(dict)
+            return render_template("metrics.html", cc_value2=dict, threshold=new_list, selected_option=selected_option, title='CC Metric Threshold', max=10, labels=labels, values=values)
 
         elif selected_option == "WMC":
             for item in lis:
                 return render_template("metrics.html", filename=item,  wmc= metrics_obj.get_WMC(item), threshold=compare_WMC(item), selected_option=selected_option)
         
         elif selected_option == "Number of Accessors":
+            list = []
+            dict = {}
             for item in lis:
-                dict = {}
                 dict[item] = metrics_obj.Number_of_accessors(item)
-                return render_template("metrics.html", filename=item,  NOA = dict, threshold = compare_NOA(item), selected_option=selected_option)
+                list.append(compare_NOA(item))
+
+            new_list = []
+            new_list = [ item for elem in list for item in elem]
+            
+            return render_template("metrics.html", NOA = dict, threshold = new_list, selected_option=selected_option)
 
         elif selected_option == "Methods-LOC":
             for item in lis:
+                # print(compare_NOM_LOC(item))
+                ss = metrics_obj.get_NOML(item)
+                
+                print(len(ss))
                 return render_template("metrics.html", filename=item, threshold = compare_NOM_LOC(item), NOML = metrics_obj.get_NOML(item), selected_option=selected_option)
 
         elif selected_option == "Number of Superclasses":
@@ -585,7 +636,9 @@ def google_pie_chart():
     god_class = obj.God_Class()
     #8
     feature_envy = obj.feature_envy()
-    print(feature_envy)
+    #9
+    ltce = obj.ltce()
+    # print(ltce)
 
     total = len(lpl) + len(lm) + len(lbcl) + lc_len + len(sak) + len(data_class) + len(god_class)
     data = {'Task': 'Number of smells', 'Long Parameter List': len(lpl), 'Long Method(LM)': len(lm), 
@@ -808,52 +861,45 @@ def compare_NOF(file):
             temp.append("Violation")
     return temp
 
-
-def get_lcom4(file):
-    list = []
-    for x in metrics_obj.lcom4(file):
-        if (x != '' and x != '+-----------------------------+------+' and x != 'Calculating LCOM using LCOM4'):
-            n = 2
-            i = (re.findall("|".join(["[^|]+"]*n), x))
-            if (i[1] != ' LCOM '):
-                list.append(i[1])
-    return list
-
-
 def compare_LCOM(file):
 
     temp = []
-    for x in get_lcom4(file):
+    try:
+        for x in metrics_obj.get_lcom4(file):
 
-        if float(x) == 1:
-            temp.append("cohesive class, which is the good class")
-        elif float(x) >= 2:
-            temp.append("problem, the class should be split into many classes")
-        elif float(x) == 0:
-            temp.append("no methods in a class")
-    return temp
+            if float(x) == 1:
+                temp.append("cohesive class, which is the good class")
+            elif float(x) >= 2:
+                temp.append("problem, the class should be split into many classes")
+            elif float(x) == 0:
+                temp.append("no methods in a class")
+        return temp
+    except:
+        return ['Exception']
 
 
 def compare_CC(file):
+    temp = []
     for i in get_CC(file):
         if int(i) <= 2:
-            return "Good/Commomn"
+            temp.append("Lies within Normal Threshold")
         elif 2 < int(i) <= 4:
-            return "Regular/Casual"
+            temp.append("Casual/Quuite above threshold")
         elif int(i) > 4:
-            return "Violation/Bad"
+            temp.append("Violation")
+    return temp
 
 
 def compare_WMC(file):
-
+    temp = []
     for x, y in metrics_obj.get_WMC(file).items():
         if y <= 11:
-            return x, "Good/Common"
+            temp.append("Lies within Normal Threshold")
         elif 11 < y <= 34:
-            return x, "Regular/Casual"
+            temp.append("Casual/Quite above threshold")
         elif y > 34:
-            return x, "Violation/Bad"
-
+            temp.append("Violation")
+    return temp
 
 def compare_NOP(file):
 
@@ -886,9 +932,9 @@ def compare_NOM_LOC(file):
         val = len(val)
         if val <= 10:
             temp.append("Good/Common")
-        elif 10 < val <= 32:
+        elif 10 < val <= 30:
             temp.append("Regular/Casual")
-        elif val > 32:
+        elif val > 30:
             temp.append("Violation/Bad")
     return temp
 

@@ -241,6 +241,16 @@
                     {% set count = namespace(value=0) %}
                     {% for filename, val in NOA.items() %}
                     {% for class_ , val2  in val.items() %}
+                    {% if val2 > 4 %}
+                    <tr style="color: palegoldenrod; background-color: orangered;">
+                        <td> {{ filename }} </td>
+                        <td> {{ class_ }} </td>
+                        <td> {{ val2 }} </td>
+                        <td> {{threshold[count.value]}} </td>
+                        {% set count.value = count.value + 1 %}
+                    </tr>
+                    {% endif %}
+                    
                     <tr>
                         <td> {{ filename }} </td>
                         <td> {{ class_ }} </td>
@@ -261,12 +271,14 @@
                 </thead>
                 <tbody>
                     <!-- For loop logic of jinja template -->
+                    {% set count = namespace(value=0) %}
                     {% for x,y in cc_value2.items() %}
                     {% for i in y %}
                     <tr>
                         <td> {{ x }} </td>
                         <td> {{ i }} </td>
-                        <td> {{threshold}} </td>
+                        <td> {{threshold[count.value]}} </td>
+                        {% set count.value = count.value + 1 %}
                     </tr>
                     {% endfor %}
                     {% endfor %}
@@ -346,9 +358,7 @@
                     <tr>
                         {% set count = namespace(value=0) %}
                         {% for filename,y in parameters.items() %}
-
                         {% for def,val in y.items() %}
-
                         <td> {{ filename }} </td>
                         <td> {{ def,val }} </td>
                         <td> {{threshold[count.value]}} </td>

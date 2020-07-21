@@ -186,7 +186,7 @@ class DesignSmells():
                             for class_ , details2 in loc.items():
                                 for x,y in details2.items():
                                     
-                                    if int(y) > 50 and value_4 > 4 and float(lcom) >= 2:
+                                    if int(y) > 50 and value_4 > 2 and float(lcom) >= 2:
                                         
                                         smells [file] = {
                                         'class_name' : class_,
@@ -195,3 +195,37 @@ class DesignSmells():
                                         }
 
                 return smells
+
+    def ltce(self):
+        smells = {}
+        for file in getFile.get_fileName(self):
+            NOL = Metrics_defined().get_LOC_class(file)
+            with open("data/"+file, "r") as file:
+                for line in file:
+                    word = line.split()
+                    if word == 'if' and word == 'else':
+                            print(word)
+                    # for x in word:
+                    #     if x == 'if' and x == 'else':
+                    #         print(x)
+                    
+                    # if 'if' and 'else' or 'lambda' in word:
+                    #     print('ternary')
+                    for class_ , details in NOL.items():
+                        if details['value'] > 50:
+                            smells [file] = {
+                            'class_name' : class_,
+                            'LOC' : details['value'],
+                            'normal' : "1-4"
+                            }
+
+        return smells
+
+
+
+    def test(self):
+
+        def hh(self):
+            pass
+    
+        DesignSmells().ltce()
