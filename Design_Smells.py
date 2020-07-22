@@ -131,18 +131,18 @@ class DesignSmells():
                 
         return smell_dict
 
-    def large_class(self):  ## LOC < 300
+    def large_class(self):  ## LOC < 200
         
         smells = {}
         for file in getFile.get_fileName(self):
             loc = Metrics_defined().get_LOC_class(file)
             for class_ , details in loc.items():
-                if details['value'] > 50:
+                if details['value'] > 200:
                     smells [file] = {
                     'line_number' : details['line_number'],
                     'class_name' : class_,
                     'loc' : details['value'],
-                    'normal' : "1-300"
+                    'normal' : "1-200"
                     }
 
         return smells

@@ -16,7 +16,7 @@ class Metrics_defined:
                 if (x != '' and x != '+-----------------------------+------+' and x != 'Calculating LCOM using LCOM4'):
                     n = 2
                     i = (re.findall("|".join(["[^|]+"]*n), x))
-                    print(i)
+                    
                     if (i[1] != ' LCOM '):
                         list.append(i[1])
         except:

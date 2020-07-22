@@ -1,6 +1,6 @@
 import os
 import sys
-from PIL import Image
+# from PIL import Image
 import simplejson
 import traceback
 from flask import Flask, request, render_template, redirect, session, url_for, send_from_directory, jsonify, flash, Response, make_response
@@ -9,9 +9,9 @@ from flask_bootstrap import Bootstrap
 from subprocess import check_output, call
 from werkzeug.utils import secure_filename
 from lib.upload_file import uploadfile
-import glob
+# import glob
 import re
-import pprint
+# import pprint
 import json
 from subprocess import Popen, PIPE, STDOUT
 from astroid import parse
@@ -115,7 +115,7 @@ def create_thumbnail(image):
         w_percent = (base_width / float(img.size[0]))
         h_size = int((float(img.size[1]) * float(w_percent)))
         img = img.resize((base_width, h_size), PIL.Image.ANTIALIAS)
-        img.save(os.path.join(app.config['THUMBNAIL_FOLDER2'], image))
+        img.save(os.path.join(app.config['THUMBNAIL_FOLDER'], image))
 
         return True
 
@@ -452,14 +452,14 @@ def metrics():
         item = 0
         list2 = []
         if selected_option == "LCOM":
-            temp = []
+            dict = {}
             for item in lis:
-                temp.append(metrics_obj.lcom4(item))
+                dict[item] = metrics_obj.lcom4(item)
                 list2.append(compare_LCOM(item))
-
+            
             new_list = []
             new_list = [ item for elem in list2 for item in elem]
-            return render_template("metrics.html", lcom=metrics_obj.lcom4(item), threshold=new_list, filename=item, selected_option=selected_option)
+            return render_template("metrics.html", lcom=dict, threshold=new_list, filename=item, selected_option=selected_option)
         elif selected_option == "Number of Methods":
             dict = {}
             array_nom = {}
@@ -506,8 +506,8 @@ def metrics():
             cn = []
             cn2 = []
             for item in lis:
-                array_nom.append(metrics_obj.Number_of_parameters(item))
-                dict[item] = metrics_obj.Number_of_parameters(item)
+                array_nom.append(metrics_obj.Number_of_parameters_(item))
+                dict[item] = metrics_obj.Number_of_parameters_(item)
                 cn.append(compare_NOP(item))
             
             for x in cn:
@@ -590,12 +590,18 @@ def metrics():
             return render_template("metrics.html", NOA = dict, threshold = new_list, selected_option=selected_option)
 
         elif selected_option == "Methods-LOC":
+            dict ={}
+            list = []
             for item in lis:
                 # print(compare_NOM_LOC(item))
                 ss = metrics_obj.get_NOML(item)
-                
-                print(len(ss))
-                return render_template("metrics.html", filename=item, threshold = compare_NOM_LOC(item), NOML = metrics_obj.get_NOML(item), selected_option=selected_option)
+                dict[item] = ss
+                list.append(compare_NOM_LOC(item))
+
+            new_list = []
+            new_list = [ item for elem in list for item in elem]
+                        
+            return render_template("metrics.html", threshold = new_list, NOML = dict, selected_option=selected_option)
 
         elif selected_option == "Number of Superclasses":
             for item in lis:

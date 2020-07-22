@@ -185,15 +185,17 @@
                 <tbody>
                     <!-- For loop logic of jinja template -->
                     {% set count = namespace(value=0) %}
-                    {% for i in lcom %}
-                    {% if i != '' %}
-                    {% if i != '+-----------------------------+------+' %}
-                    {% if i != 'Calculating LCOM using LCOM4' %}
-                    {% if i != '| Method                      | LCOM |' %}
+                    {% for x, details in lcom.items() %}
+                    {% for y in details %}
+                    
+                    {% if y != '' %}
+                    {% if y != '+-----------------------------+------+' %}
+                    {% if y != 'Calculating LCOM using LCOM4' %}
+                    {% if y != '| Method                      | LCOM |' %}
 
                     <tr>
-                        <td> {{ filename }} </td>
-                        <td> {{ i }} </td>
+                        <td> {{ x }} </td>
+                        <td> {{ y }} </td>
                         <td> {{threshold[count.value]}} </td>
                         {% set count.value = count.value + 1 %}
                     </tr>
@@ -201,6 +203,7 @@
                     {% endif %}
                     {% endif %}
                     {% endif %}
+                    {% endfor %}
                     {% endfor %}
                 </tbody>
                 {%endif%}
@@ -421,13 +424,18 @@
                     <!-- For loop logic of jinja template -->
                     {% set count = namespace(value=0) %}
                     {% for file,val in NOML.items() %}
+                    {% for x,y in val.items() %}
+                    {% for s , k in y.items() %}
+                    
                     <tr>
-                        <td> {{ filename }} </td>
-                        <td> {{ file, }} </td>
-                        <td> {{ val|length }} </td>
+                        <td> {{ file }} </td>
+                        <td> {{ x }} </td>
+                        <td> {{ k|length }} </td>
                         <td> {{threshold[count.value]}} </td>
                         {% set count.value = count.value + 1 %}
                     </tr>
+                    {% endfor %}
+                    {% endfor %}
                     {% endfor %}
                     {%endif%}
 
